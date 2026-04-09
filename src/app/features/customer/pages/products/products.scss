@@ -1,0 +1,325 @@
+// ─── VARIABLES ───────────────────────────────────────────────
+$primary: #ff5722;
+$primary-dark: #c41c00;
+$surface: #ffffff;
+$bg: #f7f7f8;
+$text-primary: #1a1a2e;
+$text-secondary: #6b7280;
+$border: #e5e7eb;
+$radius: 16px;
+$shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+$shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.14);
+$transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+// ─── PAGE WRAPPER ─────────────────────────────────────────────
+.page-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+  background: $bg;
+  min-height: 100vh;
+}
+
+// ─── PAGE HEADER ──────────────────────────────────────────────
+.page-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: $text-primary;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.product-count {
+  font-size: 0.95rem;
+  color: $text-secondary;
+  background: $border;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+// ─── FILTERS BAR ──────────────────────────────────────────────
+.filters-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: $surface;
+  border-radius: $radius;
+  padding: 16px 20px;
+  box-shadow: $shadow;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+
+  .search-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 220px;
+
+    .filter-icon {
+      font-size: 1.2rem;
+      margin-top: -20px;
+    }
+  }
+
+  .filter-selects {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .filter-field {
+    margin-bottom: -1.25em;
+
+    &.search-field {
+      width: 100%;
+    }
+  }
+}
+
+// ─── PRODUCT GRID ─────────────────────────────────────────────
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+// ─── PRODUCT CARD ─────────────────────────────────────────────
+.product-card {
+  background: $surface;
+  border-radius: $radius;
+  overflow: hidden;
+  box-shadow: $shadow;
+  transition: $transition;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $border;
+
+  &:hover {
+    box-shadow: $shadow-hover;
+    transform: translateY(-4px);
+
+    .card-image {
+      transform: scale(1.05);
+    }
+
+    .wishlist-btn {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+// ─── CARD IMAGE ───────────────────────────────────────────────
+.card-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  height: 200px;
+  background: $bg;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.category-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  color: $text-primary;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid $border;
+}
+
+.wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: $surface;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: $transition;
+  color: $primary;
+
+  &:hover {
+    background: $primary;
+    color: $surface;
+  }
+}
+
+// ─── CARD BODY ────────────────────────────────────────────────
+.card-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 4px;
+}
+
+.product-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0 0 4px;
+  line-height: 1.4;
+  display: -webkit-box;
+  // -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: $primary;
+  margin: 0 0 12px;
+  letter-spacing: -0.3px;
+}
+
+// ─── CARD ACTIONS ─────────────────────────────────────────────
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.btn {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+  white-space: nowrap;
+
+  &.btn-outline {
+    background: transparent;
+    border: 1.5px solid $border;
+    color: $text-primary;
+
+    &:hover {
+      border-color: $primary;
+      color: $primary;
+      background: rgba($primary, 0.05);
+    }
+  }
+
+  &.btn-primary {
+    background: $primary;
+    color: white;
+    box-shadow: 0 2px 8px rgba($primary, 0.3);
+
+    &:hover {
+      background: $primary-dark;
+      box-shadow: 0 4px 16px rgba($primary, 0.4);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// ─── EMPTY STATE ──────────────────────────────────────────────
+.empty-state {
+  text-align: center;
+  padding: 80px 24px;
+  color: $text-secondary;
+
+  .empty-icon {
+    font-size: 3.5rem;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: $text-primary;
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 0.95rem;
+    margin: 0;
+  }
+}
+
+// ─── PAGINATOR ────────────────────────────────────────────────
+.paginator-wrapper {
+  display: flex;
+  justify-content: center;
+
+  ::ng-deep .mat-mdc-paginator {
+    background: $surface;
+    border-radius: $radius;
+    box-shadow: $shadow;
+    border: 1px solid $border;
+  }
+}
+
+// ─── RESPONSIVE ───────────────────────────────────────────────
+@media (max-width: 768px) {
+  .page-wrapper {
+    padding: 20px 16px 40px;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+
+    .search-group {
+      min-width: unset;
+    }
+
+    .filter-selects {
+      flex-direction: column;
+    }
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .wishlist-btn {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

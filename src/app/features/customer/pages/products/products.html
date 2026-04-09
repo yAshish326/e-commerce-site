@@ -1,0 +1,90 @@
+<!-- FILTERS BAR -->
+<div class="page-wrapper">
+  <div class="page-header">
+    <!-- <h1 class="page-title">All Products</h1>
+    <span class="product-count">{{ filteredProducts.length }} items</span> -->
+  </div>
+<!-- 
+  <section class="filters-bar"> -->
+    <!-- <div class="filter-group search-group">
+      <span class="filter-icon">🔍</span>
+      <mat-form-field appearance="outline" class="filter-field search-field">
+        <mat-label>Search products</mat-label>
+        <input matInput [(ngModel)]="search" (ngModelChange)="applyFilters()" placeholder="Type to search..." />
+      </mat-form-field>
+    </div> -->
+
+    <!-- <div class="filter-selects">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Category</mat-label>
+        <mat-select [(ngModel)]="selectedCategory" (selectionChange)="applyFilters()">
+          @for (category of categories; track category) {
+            <mat-option [value]="category">{{ category }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Sort by</mat-label>
+        <mat-select [(ngModel)]="sort" (selectionChange)="applyFilters()">
+          <mat-option value="latest">⏱ Latest</mat-option>
+          <mat-option value="priceAsc">↑ Price: Low to High</mat-option>
+          <mat-option value="priceDesc">↓ Price: High to Low</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div> -->
+  <!-- </section> -->
+
+  <!-- PRODUCT GRID -->
+  <div class="card-grid">
+    @for (product of pagedProducts; track product.id) {
+      <div class="product-card">
+        <div class="card-image-wrapper">
+          <img
+            class="card-image"
+            [src]="product.imageUrl || 'https://via.placeholder.com/400x300?text=No+Image'"
+            [alt]="product.name"
+          />
+          <span class="category-badge">{{ product.category }}</span>
+          <button class="wishlist-btn" (click)="addToWishlist(product)" title="Add to Wishlist">
+            ♡
+          </button>
+        </div>
+
+        <div class="card-body">
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-price">₹ {{ product.price | number }}</p>
+
+          <div class="card-actions">
+            <button class="btn btn-outline" [routerLink]="product.id ? ['/customer/products', product.id] : ['/customer/products']">
+              View Details
+            </button>
+            <button class="btn btn-primary" (click)="addToCart(product)">
+              🛒 Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- EMPTY STATE -->
+  @if (pagedProducts.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">🛍️</div>
+      <h3>No products found</h3>
+      <p>Try adjusting your search or filters</p>
+    </div>
+  }
+
+  <!-- PAGINATOR -->
+  <div class="paginator-wrapper">
+    <mat-paginator
+      [length]="filteredProducts.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[4, 8, 12]"
+      [pageIndex]="pageIndex"
+      (page)="onPageChange($event)"
+    ></mat-paginator>
+  </div>
+</div>

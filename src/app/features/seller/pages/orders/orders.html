@@ -1,0 +1,17 @@
+<h2>Orders for My Products</h2>
+@if (orders.length === 0) {
+  <mat-card>No seller orders yet.</mat-card>
+} @else {
+  @for (order of orders; track order.id) {
+    <mat-card class="order-card">
+      <h3>Order #{{ order.id }}</h3>
+      <p>Status: {{ order.status }} | Payment: {{ order.paymentStatus }}</p>
+      <p>Total: Rs. {{ order.amount }}</p>
+      <mat-list>
+        @for (item of order.items; track item.id) {
+          <mat-list-item>{{ item.product.name }} x {{ item.quantity }}</mat-list-item>
+        }
+      </mat-list>
+    </mat-card>
+  }
+}

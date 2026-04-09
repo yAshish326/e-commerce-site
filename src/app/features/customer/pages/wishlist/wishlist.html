@@ -1,0 +1,66 @@
+<section class="wishlist-page">
+  <header class="wishlist-hero">
+    <div>
+      <p class="eyebrow">Saved for later</p>
+      <h2>Wishlist</h2>
+      <p class="hero-copy">Keep an eye on the products you love and move them to cart whenever you're ready.</p>
+    </div>
+
+    <div class="wishlist-stats" aria-label="Wishlist summary">
+      <div class="stat-card">
+        <span class="stat-label">Items</span>
+        <strong>{{ itemCount }}</strong>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Value</span>
+        <strong>Rs. {{ totalValue }}</strong>
+      </div>
+    </div>
+  </header>
+
+  @if (items.length === 0) {
+    <mat-card class="empty-state">
+      <div class="empty-visual">
+        <mat-icon>favorite_border</mat-icon>
+      </div>
+      <h3>Your wishlist is empty</h3>
+      <p>Save products from the catalog to build a list you can return to later.</p>
+      <button mat-flat-button color="primary" routerLink="/customer/home">Browse Products</button>
+    </mat-card>
+  } @else {
+    <div class="wishlist-grid">
+      @for (item of items; track item.id) {
+        <mat-card class="wishlist-card">
+          <div class="card-media">
+            <img
+              mat-card-image
+              [src]="item.product.imageUrl || 'https://via.placeholder.com/640x420?text=Product'"
+              [alt]="item.product.name"
+            />
+            <span class="price-badge">Rs. {{ item.product.price }}</span>
+          </div>
+
+          <mat-card-content>
+            <div class="card-topline">
+              <span class="category-chip">{{ item.product.category }}</span>
+              <!-- <button mat-icon-button color="warn" type="button" (click)="remove(item)" aria-label="Remove from wishlist">
+                <mat-icon>delete_outline</mat-icon>
+              </button> -->
+            </div>
+
+            <h3>{{ item.product.name }}</h3>
+            <p class="description">{{ item.product.description }}</p>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button mat-flat-button color="primary" type="button" (click)="moveToCart(item)">
+              <!-- <mat-icon>shopping_cart</mat-icon> -->
+              Move to Cart
+            </button>
+            <button mat-button color="warn" type="button" (click)="remove(item)">Remove</button>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  }
+</section>

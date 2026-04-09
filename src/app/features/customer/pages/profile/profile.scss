@@ -1,0 +1,140 @@
+.profile-page {
+  font-family: 'Poppins', sans-serif;
+}
+
+.heading-row {
+  margin-bottom: 14px;
+}
+
+.heading-row h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 28px;
+}
+
+.heading-row p {
+  margin: 6px 0 0;
+  color: #6b7280;
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 16px;
+}
+
+.photo-card,
+.form-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 106, 77, 0.12);
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+  padding: 16px;
+}
+
+.avatar-wrap {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+}
+
+.avatar-wrap img,
+.avatar-placeholder {
+  width: 180px;
+  height: 180px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 3px solid #ffd8ca;
+}
+
+.avatar-placeholder {
+  display: grid;
+  place-items: center;
+  background: #fff2ea;
+  color: #9a3412;
+  font-weight: 700;
+}
+
+.upload-btn {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, #ff6a4d 0%, #ff5239 100%);
+}
+
+input[type='file'] {
+  display: none;
+}
+
+.file-name {
+  margin-top: 10px;
+  color: #6b7280;
+  font-size: 13px;
+  word-break: break-word;
+}
+
+form {
+  display: grid;
+  gap: 14px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+label {
+  font-size: 12px;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+}
+
+input:focus {
+  outline: none;
+  border-color: #ff6a4d;
+  box-shadow: 0 0 0 4px rgba(255, 106, 77, 0.1);
+}
+
+input[readonly] {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+button {
+  margin-top: 4px;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(135deg, #ff6a4d 0%, #ff5239 100%);
+  box-shadow: 0 8px 18px rgba(255, 106, 77, 0.28);
+}
+
+@media (max-width: 900px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .avatar-wrap img,
+  .avatar-placeholder {
+    width: 140px;
+    height: 140px;
+  }
+}

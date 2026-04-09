@@ -1,0 +1,51 @@
+<section class="profile-page">
+  <div class="heading-row">
+    <h2>My Profile</h2>
+    <p>Update your details and profile photo</p>
+  </div>
+
+  <div class="profile-layout">
+    <article class="photo-card">
+      <div class="avatar-wrap">
+        @if (previewPhotoUrl) {
+          <img [src]="previewPhotoUrl" alt="Profile photo" />
+        } @else {
+          <div class="avatar-placeholder">No Photo</div>
+        }
+      </div>
+
+      <label class="upload-btn" for="profile-photo">Upload Photo</label>
+      <input id="profile-photo" type="file" accept="image/*" (change)="onFileSelected($event)" />
+
+      @if (selectedFileName) {
+        <p class="file-name">Selected: {{ selectedFileName }}</p>
+      }
+    </article>
+
+    <article class="form-card">
+      <form [formGroup]="form" (ngSubmit)="saveProfile()">
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email" readonly />
+        </div>
+
+        <div class="field">
+          <label for="displayName">Full Name</label>
+          <input id="displayName" type="text" formControlName="displayName" placeholder="Enter your name" />
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone</label>
+          <input id="phone" type="tel" formControlName="phone" placeholder="Enter phone number" />
+        </div>
+
+        <div class="field">
+          <label for="photoURL">Photo URL</label>
+          <input id="photoURL" type="url" formControlName="photoURL" placeholder="Photo URL (auto-filled after upload)" readonly />
+        </div>
+
+        <button type="submit">Save Profile</button>
+      </form>
+    </article>
+  </div>
+</section>

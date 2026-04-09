@@ -1,0 +1,109 @@
+<section class="home-page">
+  <header class="page-hero">
+    <div>
+      <p class="eyebrow">Discover something new</p>
+      <h2>Shop smarter, faster, and with a cleaner experience</h2>
+      <p class="hero-copy">Browse highlighted products, explore curated categories, and jump back into your favorite items without losing context.</p>
+    </div>
+
+    <div class="hero-badges">
+      <div class="badge-card"><span>Fast checkout</span></div>
+      <div class="badge-card"><span>Wishlist ready</span></div>
+      <div class="badge-card"><span>Wallet support</span></div>
+    </div>
+  </header>
+
+  <div class="category-row">
+    <button type="button" class="chip chip-active">Browse Categories</button>
+    <button type="button" class="chip">Shop</button>
+    <button type="button" class="chip">Recent Items</button>
+    <button type="button" class="chip">Best Price</button>
+    <button type="button" class="chip">Popular</button>
+  </div>
+  			<!-- <div class="search-shell">
+				<input
+					type="text"
+					[value]="search"
+					(input)="onSearch($any($event.target).value)"
+					placeholder="Search here..."
+					aria-label="Search products"
+				/>
+			</div> -->
+
+  @if (featuredProducts$ | async; as products) {
+    <div class="hero-grid">
+      <article class="hero-card hero-main">
+        <div class="hero-copy">
+          <p class="badge">New arrivals</p>
+          <h2>Best Furniture Collection</h2>
+          <p>Design, style and comfort that defines your lifestyle.</p>
+          <button type="button" routerLink="/customer/products">Shop now</button>
+        </div>
+        <img
+          class="hero-image hero-image-main"
+          src="assets/products/lamp.svg"
+          alt="Featured collection"
+          (error)="onImageError($event)"
+        />
+      </article>
+
+      <article class="hero-card hero-side">
+        <p class="badge">Super Sale 35%</p>
+        <h3>Stylish Looks For Any Season</h3>
+        <button type="button" routerLink="/customer/products">Shop now</button>
+        <img
+          class="hero-image hero-image-side"
+          [src]="products[1]?.imageUrl || 'assets/products/backpack.svg'"
+          alt="Featured product"
+          (error)="onImageError($event)"
+        />
+      </article>
+
+      <article class="hero-card hero-bottom-left">
+        <div>
+          <p class="badge">Summer Sale 70%</p>
+          <h3>Stylish Men Fashion</h3>
+          <button type="button" routerLink="/customer/products">Buy now</button>
+        </div>
+        <img
+          class="hero-image hero-image-bottom"
+          src="assets/products/book.svg"
+          alt="Fashion product"
+          (error)="onImageError($event)"
+        />
+      </article>
+
+      <article class="hero-card hero-bottom-mid">
+        <div class="offer-circle">30%</div>
+        <p>Special sale this week</p>
+        <img
+          class="hero-image"
+          [src]="products[3]?.imageUrl || 'assets/products/fitness-band.svg'"
+          alt="Offer product"
+          (error)="onImageError($event)"
+        />
+      </article>
+    </div>
+
+    <div class="heading-row">
+      <h3>Trending Products</h3>
+      <a routerLink="/customer/products">View all products</a>
+    </div>
+
+    <div class="products">
+      @for (product of products; track product.id) {
+        <article class="card">
+            <img [src]="product.imageUrl || 'assets/products/headphones.svg'" [alt]="product.name" (error)="onImageError($event)" />
+          <h4>{{ product.name }}</h4>
+          <p class="price">₹ {{ product.price }}</p>
+          <div class="card-actions">
+            <button type="button" class="outline-btn" [routerLink]="product.id ? ['/customer/products', product.id] : ['/customer/products']">
+              View Details
+            </button>
+            <button type="button" (click)="addToCart(product)">Add to Cart</button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

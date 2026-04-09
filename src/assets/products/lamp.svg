@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" role="img" aria-label="Lamp product image">
+  <rect width="900" height="700" fill="#1b263b"/>
+  <path d="M330 220 H570 L510 360 H390 Z" fill="#e0e1dd"/>
+  <rect x="435" y="360" width="30" height="170" fill="#e0e1dd"/>
+  <rect x="360" y="530" width="180" height="34" rx="16" fill="#778da9"/>
+  <circle cx="450" cy="330" r="20" fill="#ffdd57"/>
+  <text x="450" y="620" text-anchor="middle" fill="#e0e1dd" font-size="48" font-family="Verdana, sans-serif">Nordic Table Lamp</text>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" role="img" aria-label="Backpack product image">
+  <rect width="900" height="700" fill="#264653"/>
+  <rect x="285" y="180" width="330" height="360" rx="70" fill="#f4a261"/>
+  <rect x="340" y="260" width="220" height="200" rx="30" fill="#e76f51"/>
+  <path d="M360 180 Q450 80 540 180" fill="none" stroke="#f4a261" stroke-width="24"/>
+  <text x="450" y="620" text-anchor="middle" fill="#fefae0" font-size="48" font-family="Verdana, sans-serif">Canvas Backpack</text>
+</svg>

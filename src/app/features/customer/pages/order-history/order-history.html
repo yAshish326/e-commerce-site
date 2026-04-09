@@ -1,0 +1,22 @@
+<h2>Order History</h2>
+@if (orders.length === 0) {
+  <mat-card>No orders yet.</mat-card>
+} @else {
+  <mat-accordion>
+    @for (order of orders; track order.id) {
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Order #{{ order.id }}</mat-panel-title>
+          <mat-panel-description>{{ order.status }} | Rs. {{ order.amount }}</mat-panel-description>
+        </mat-expansion-panel-header>
+        <p>Payment: {{ order.paymentStatus }}</p>
+        <p>Placed: {{ order.createdAt | date : 'medium' }}</p>
+        <mat-list>
+          @for (item of order.items; track item.id) {
+            <mat-list-item>{{ item.product.name }} x {{ item.quantity }}</mat-list-item>
+          }
+        </mat-list>
+      </mat-expansion-panel>
+    }
+  </mat-accordion>
+}

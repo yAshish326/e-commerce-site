@@ -1,0 +1,13 @@
+- [x] Verify that the copilot-instructions.md file in the .github directory is created. (Completed: file created)
+- [x] Clarify Project Requirements (Completed: Angular latest + Firebase + Angular Material full-stack e-commerce)
+- [x] Scaffold the Project (Completed: Angular workspace scaffolded in current root with routing + SCSS)
+- [x] Customize the Project (Completed: auth, customer, partner modules with lazy loading, guards, services, forms, pagination, wallet, checkout, fake payment, seller dashboard, product CRUD, wishlist)
+- [x] Install Required Extensions (Completed: no extensions required by project setup info)
+- [x] Compile the Project (Completed: npm run build successful)
+- [x] Create and Run Task (Completed: npm start launched in background terminal)
+- [x] Launch the Project (Completed: Angular dev server started at http://localhost:4200/)
+- [x] Ensure Documentation is Complete (Completed: README updated and this file cleaned of HTML comments)
+
+- Work through each checklist item systematically.
+- Keep communication concise and focused.
+- Follow development best practices.

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" role="img" aria-label="Coffee product image">
+  <rect width="900" height="700" fill="#3d2b1f"/>
+  <rect x="250" y="250" width="360" height="220" rx="24" fill="#ddb892"/>
+  <path d="M610 290 H680 Q740 290 740 350 Q740 410 680 410 H610" fill="#ddb892"/>
+  <path d="M330 190 Q300 130 340 90" stroke="#ffe8d6" stroke-width="14" fill="none"/>
+  <path d="M430 190 Q400 130 440 90" stroke="#ffe8d6" stroke-width="14" fill="none"/>
+  <path d="M530 190 Q500 130 540 90" stroke="#ffe8d6" stroke-width="14" fill="none"/>
+  <text x="450" y="620" text-anchor="middle" fill="#ffe8d6" font-size="48" font-family="Verdana, sans-serif">Cold Brew Pack</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" role="img" aria-label="Ceramic bowls product image">
+  <rect width="900" height="700" fill="#4a4e69"/>
+  <path d="M180 360 Q240 470 300 360 Z" fill="#f2e9e4"/>
+  <path d="M320 360 Q380 470 440 360 Z" fill="#f2e9e4"/>
+  <path d="M460 360 Q520 470 580 360 Z" fill="#f2e9e4"/>
+  <path d="M600 360 Q660 470 720 360 Z" fill="#f2e9e4"/>
+  <text x="450" y="620" text-anchor="middle" fill="#f2e9e4" font-size="48" font-family="Verdana, sans-serif">Ceramic Bowl Set</text>
+</svg>

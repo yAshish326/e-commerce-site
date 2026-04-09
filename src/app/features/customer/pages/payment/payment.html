@@ -1,0 +1,14 @@
+<mat-card>
+  <h2>Fake Payment Gateway</h2>
+
+  @if (orderDraft) {
+    <p>Total to pay: <strong>Rs. {{ orderDraft.amount }}</strong></p>
+    <div class="actions">
+      <button mat-flat-button (click)="processPayment('success')">Simulate Success</button>
+      <button mat-button color="warn" (click)="processPayment('failed')">Simulate Failure</button>
+      <button mat-button (click)="processPayment('random')">Random Result</button>
+    </div>
+  } @else {
+    <p>No checkout data found.</p>
+  }
+</mat-card>

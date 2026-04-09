@@ -1,0 +1,44 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$ecommerce-primary: mat.$azure-palette;
+$ecommerce-accent: mat.$orange-palette;
+
+$ecommerce-theme: mat.define-theme(
+  (
+    color: (
+      primary: $ecommerce-primary,
+      tertiary: $ecommerce-accent,
+    ),
+    typography: (
+      brand-family: 'Poppins, Segoe UI, sans-serif',
+      plain-family: 'Poppins, Segoe UI, sans-serif',
+    ),
+    density: (
+      scale: -1,
+    ),
+  )
+);
+
+:root {
+  @include mat.all-component-themes($ecommerce-theme);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  background: linear-gradient(180deg, #f4f8ff 0%, #ffffff 100%);
+  color: #1b1e28;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}

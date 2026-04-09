@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" role="img" aria-label="Yoga mat product image">
+  <rect width="900" height="700" fill="#2a9d8f"/>
+  <rect x="170" y="280" width="560" height="140" rx="70" fill="#e9c46a"/>
+  <circle cx="730" cy="350" r="70" fill="#f4a261"/>
+  <circle cx="730" cy="350" r="42" fill="#2a9d8f"/>
+  <text x="450" y="620" text-anchor="middle" fill="#264653" font-size="48" font-family="Verdana, sans-serif">Yoga Mat</text>
+</svg>

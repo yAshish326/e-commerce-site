@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" role="img" aria-label="Book product image">
+  <rect width="900" height="700" fill="#003049"/>
+  <rect x="220" y="160" width="220" height="380" rx="12" fill="#fcbf49"/>
+  <rect x="460" y="160" width="220" height="380" rx="12" fill="#f77f00"/>
+  <rect x="444" y="160" width="12" height="380" fill="#eae2b7"/>
+  <text x="450" y="620" text-anchor="middle" fill="#eae2b7" font-size="48" font-family="Verdana, sans-serif">Paperback Book</text>
+</svg>
