@@ -26,6 +26,7 @@ export class ProductForm implements OnInit {
   readonly form = this.fb.nonNullable.group({
     name: ['', Validators.required],
     price: [0, [Validators.required, Validators.min(1)]],
+    quantity: [1, [Validators.required, Validators.min(1)]],
     category: ['', Validators.required],
     description: ['', Validators.required],
   });
@@ -48,6 +49,7 @@ export class ProductForm implements OnInit {
     this.form.patchValue({
       name: product.name,
       price: product.price,
+      quantity: product.quantity,
       category: product.category,
       description: product.description,
     });
@@ -117,8 +119,21 @@ export class ProductForm implements OnInit {
     if (!this.productId) {
       return;
     }
-    await this.productService.deleteProduct(this.productId);
-    this.ui.toast('Product deleted');
-    await this.router.navigate(['/seller/dashboard']);
+
+    const shouldDelete = window.confirm('Delete this product? This action cannot be undone.');
+    if (!shouldDelete) {
+      return;
+    }
+
+    this.ui.setLoading(true);
+    try {
+      await this.productService.deleteProduct(this.productId);
+      this.ui.toast('Product deleted');
+      await this.router.navigate(['/seller/dashboard']);
+    } catch (error: any) {
+      this.ui.toast(error?.message ?? 'Delete failed');
+    } finally {
+      this.ui.setLoading(false);
+    }
   }
 }

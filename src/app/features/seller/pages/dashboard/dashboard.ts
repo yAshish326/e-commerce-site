@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CartItem, Order, Product } from '../../../../core/models/app.models';
 import { AuthService } from '../../../../core/services/auth.service';
 import { OrderService } from '../../../../core/services/order.service';
 import { ProductService } from '../../../../core/services/product.service';
+import { UiService } from '../../../../shared/services/ui.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +14,7 @@ import { ProductService } from '../../../../core/services/product.service';
 })
 export class Dashboard implements OnInit, OnDestroy {
   private readonly currencyFormatter = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
+  private readonly deletingProductIds = new Set<string>();
 
   sellerId = '';
   products: Product[] = [];
@@ -20,11 +22,14 @@ export class Dashboard implements OnInit, OnDestroy {
 
   private productsSub?: Subscription;
   private ordersSub?: Subscription;
+  private authSub?: Subscription;
 
   constructor(
     private readonly authService: AuthService,
     private readonly productService: ProductService,
     private readonly orderService: OrderService,
+    private readonly ui: UiService,
+    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   get sellerOrders(): Order[] {
@@ -82,6 +87,39 @@ export class Dashboard implements OnInit, OnDestroy {
       const unitsInOrder = this.getSellerItems(order).reduce((itemsSum, item) => itemsSum + item.quantity, 0);
       return sum + unitsInOrder;
     }, 0);
+  }
+
+  get paymentSuccessRate(): number {
+    if (this.sellerOrders.length === 0) {
+      return 0;
+    }
+
+    return (this.successfulPaymentsCount / this.sellerOrders.length) * 100;
+  }
+
+  get paymentFailureRate(): number {
+    if (this.sellerOrders.length === 0) {
+      return 0;
+    }
+
+    return (this.failedPaymentsCount / this.sellerOrders.length) * 100;
+  }
+
+  get catalogQualityRate(): number {
+    if (this.products.length === 0) {
+      return 100;
+    }
+
+    const withImage = this.products.length - this.productsMissingImage;
+    return (withImage / this.products.length) * 100;
+  }
+
+  get pendingRiskShare(): number {
+    if (this.totalRevenue + this.pendingRevenue === 0) {
+      return 0;
+    }
+
+    return (this.pendingRevenue / (this.totalRevenue + this.pendingRevenue)) * 100;
   }
 
   get productsMissingImage(): number {
@@ -151,24 +189,105 @@ export class Dashboard implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    const uid = this.authService.getCurrentUid();
-    if (!uid) {
+  formatPercent(value: number): string {
+    return `${value.toFixed(1)}%`;
+  }
+
+  getProductInitial(name: string): string {
+    return (name.trim().charAt(0) || 'P').toUpperCase();
+  }
+
+  getTopProductShare(revenue: number): number {
+    const topRevenue = this.topProducts[0]?.revenue ?? 0;
+    if (topRevenue === 0) {
+      return 0;
+    }
+
+    return Math.min(100, (revenue / topRevenue) * 100);
+  }
+
+  isDeleting(productId: string): boolean {
+    return this.deletingProductIds.has(productId);
+  }
+
+  async deleteProduct(product: Product): Promise<void> {
+    if (!product.id || this.isDeleting(product.id)) {
       return;
     }
 
-    this.sellerId = uid;
+    const shouldDelete = window.confirm(`Delete \"${product.name}\"? This action cannot be undone.`);
+    if (!shouldDelete) {
+      return;
+    }
 
-    this.productsSub = this.productService
-      .watchSellerProducts(uid)
-      .subscribe((products) => (this.products = products));
+    this.deletingProductIds.add(product.id);
+    try {
+      await this.productService.deleteProduct(product.id);
+      this.ui.toast('Product deleted');
+    } catch (error: any) {
+      this.ui.toast(error?.message ?? 'Delete failed');
+    } finally {
+      this.deletingProductIds.delete(product.id);
+    }
+  }
 
-    this.ordersSub = this.orderService.watchSellerOrders(uid).subscribe((orders) => (this.orders = orders));
+  ngOnInit(): void {
+    this.authSub = this.authService.authState$.subscribe((user) => {
+      Promise.resolve().then(() => {
+        const uid = user?.uid ?? '';
+
+        if (!uid) {
+          this.sellerId = '';
+          this.products = [];
+          this.orders = [];
+          this.disconnectSellerStreams();
+          this.cdr.markForCheck();
+          return;
+        }
+
+        if (uid === this.sellerId) {
+          return;
+        }
+
+        this.sellerId = uid;
+        this.connectSellerStreams(uid);
+        this.cdr.markForCheck();
+      });
+    });
   }
 
   ngOnDestroy(): void {
+    this.authSub?.unsubscribe();
+    this.disconnectSellerStreams();
+  }
+
+  private connectSellerStreams(uid: string): void {
+    this.disconnectSellerStreams();
+
+    this.productsSub = this.productService
+      .watchSellerProducts(uid)
+      .subscribe((products) => {
+        Promise.resolve().then(() => {
+          this.products = products;
+          this.cdr.markForCheck();
+        });
+      });
+
+    this.ordersSub = this.orderService
+      .watchSellerOrders(uid)
+      .subscribe((orders) => {
+        Promise.resolve().then(() => {
+          this.orders = orders;
+          this.cdr.markForCheck();
+        });
+      });
+  }
+
+  private disconnectSellerStreams(): void {
     this.productsSub?.unsubscribe();
     this.ordersSub?.unsubscribe();
+    this.productsSub = undefined;
+    this.ordersSub = undefined;
   }
 
   private getSellerItems(order: Order): CartItem[] {

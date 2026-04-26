@@ -1,5 +1,5 @@
 <section class="dashboard-shell">
-  <header class="dashboard-header">
+  <!-- <header class="dashboard-header">
     <div class="title-block">
       <p class="kicker">Store Performance</p>
       <h2>Seller Command Center</h2>
@@ -10,7 +10,7 @@
       <button mat-flat-button routerLink="/seller/products/new">Add Product</button>
       <button mat-stroked-button routerLink="/seller/orders">View Orders</button>
     </div>
-  </header>
+  </header> -->
 
   <section class="kpi-grid" aria-label="Seller KPIs">
     <mat-card class="kpi-card tone-revenue">
@@ -42,20 +42,42 @@
     </mat-card>
   </section>
 
+  <section class="metric-rail" aria-label="Performance highlights">
+    <article class="mini-metric">
+      <p>Payment success rate</p>
+      <strong>{{ formatPercent(paymentSuccessRate) }}</strong>
+    </article>
+    <article class="mini-metric">
+      <p>Payment failure rate</p>
+      <strong>{{ formatPercent(paymentFailureRate) }}</strong>
+    </article>
+    <article class="mini-metric">
+      <p>Catalog quality</p>
+      <strong>{{ formatPercent(catalogQualityRate) }}</strong>
+    </article>
+    <article class="mini-metric">
+      <p>Pending risk share</p>
+      <strong>{{ formatPercent(pendingRiskShare) }}</strong>
+    </article>
+  </section>
+
   <section class="insights-grid">
     <mat-card class="panel-card">
-      <h3>Operational Tasks</h3>
+      <div class="panel-title-row">
+        <h3>Operational Tasks</h3>
+        <span class="panel-badge">Action Queue</span>
+      </div>
       <div class="task-row">
         <span>Failed payments to review</span>
-        <strong>{{ failedPaymentsCount }}</strong>
+        <strong class="severity-high">{{ failedPaymentsCount }}</strong>
       </div>
       <div class="task-row">
         <span>Products without image</span>
-        <strong>{{ productsMissingImage }}</strong>
+        <strong class="severity-mid">{{ productsMissingImage }}</strong>
       </div>
       <div class="task-row">
         <span>Products stale for 7+ days</span>
-        <strong>{{ staleProducts }}</strong>
+        <strong class="severity-mid">{{ staleProducts }}</strong>
       </div>
       <div class="task-row">
         <span>Total listed products</span>
@@ -64,18 +86,21 @@
     </mat-card>
 
     <mat-card class="panel-card">
-      <h3>Financial Snapshot</h3>
+      <div class="panel-title-row">
+        <h3>Financial Snapshot</h3>
+        <span class="panel-badge success">Revenue Health</span>
+      </div>
       <div class="task-row">
         <span>Successful payments</span>
-        <strong>{{ successfulPaymentsCount }}</strong>
+        <strong class="severity-good">{{ successfulPaymentsCount }}</strong>
       </div>
       <div class="task-row">
         <span>Pending payments</span>
-        <strong>{{ pendingPaymentsCount }}</strong>
+        <strong class="severity-mid">{{ pendingPaymentsCount }}</strong>
       </div>
       <div class="task-row">
         <span>Failed payments</span>
-        <strong>{{ failedPaymentsCount }}</strong>
+        <strong class="severity-high">{{ failedPaymentsCount }}</strong>
       </div>
       <div class="task-row">
         <span>Average order value</span>
@@ -86,7 +111,10 @@
 
   <section class="data-grid">
     <mat-card class="panel-card">
-      <h3>Recent Orders</h3>
+      <div class="panel-title-row">
+        <h3>Recent Orders</h3>
+        <span class="panel-badge">Live Feed</span>
+      </div>
       @if (recentOrders.length === 0) {
         <p class="empty">No orders yet. Your live order feed will appear here.</p>
       } @else {
@@ -110,7 +138,10 @@
     </mat-card>
 
     <mat-card class="panel-card">
-      <h3>Top Performing Products</h3>
+      <div class="panel-title-row">
+        <h3>Top Performing Products</h3>
+        <span class="panel-badge success">Ranked by Revenue</span>
+      </div>
       @if (topProducts.length === 0) {
         <p class="empty">No sales data yet for ranking products.</p>
       } @else {
@@ -120,8 +151,62 @@
               <div>
                 <p class="product-name">{{ item.name }}</p>
                 <p class="order-meta">{{ item.units }} units sold</p>
+                <div class="bar-track" aria-hidden="true">
+                  <span class="bar-fill" [style.width.%]="getTopProductShare(item.revenue)"></span>
+                </div>
               </div>
               <strong>Rs. {{ formatCurrency(item.revenue) }}</strong>
+            </article>
+          }
+        </div>
+      }
+    </mat-card>
+  </section>
+
+  <section>
+    <mat-card class="panel-card">
+      <div class="panel-title-row">
+        <h3>Your Products</h3>
+        <span class="panel-badge">Catalog</span>
+      </div>
+      @if (products.length === 0) {
+        <p class="empty">You have not listed any products yet.</p>
+      } @else {
+        <div class="managed-products">
+          @for (product of products; track product.id ?? product.name) {
+            <article class="managed-row">
+              <div class="managed-left">
+                <div class="thumb" [class.has-image]="!!product.imageUrl.trim()">
+                  @if (product.imageUrl.trim()) {
+                    <img [src]="product.imageUrl" [alt]="product.name" loading="lazy" />
+                  } @else {
+                    <span>{{ getProductInitial(product.name) }}</span>
+                  }
+                </div>
+                <div>
+                <p class="product-name">{{ product.name }}</p>
+                <p class="order-meta">{{ product.category }} • Rs. {{ formatCurrency(product.price) }}</p>
+                </div>
+              </div>
+              <div class="row-actions">
+                <button
+                  mat-stroked-button
+                  type="button"
+                  [routerLink]="['/seller/products', product.id, 'edit']"
+                  [disabled]="!product.id || isDeleting(product.id)"
+                >
+                  Edit
+                </button>
+                <button
+                  mat-button
+                  color="warn"
+                  type="button"
+                  (click)="deleteProduct(product)"
+                  [disabled]="!product.id || isDeleting(product.id)"
+                >
+                  {{ isDeleting(product.id ?? '') ? 'Deleting...' : 'Delete' }}
+                </button>
+              </div>
             </article>
           }
         </div>
