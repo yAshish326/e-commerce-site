@@ -1,14 +1,74 @@
-<mat-card>
-  <h2>Fake Payment Gateway</h2>
+<section class="payment-page">
+  <header class="payment-hero">
+    <div>
+      <p class="eyebrow">Secure Checkout</p>
+      <h2>Payment Gateway</h2>
+      <p class="hero-copy">Review your total and choose how you want to simulate payment for this order.</p>
+    </div>
+    @if (orderDraft) {
+      <div class="hero-badge">
+        <span>Total</span>
+        <strong>Rs. {{ orderDraft.amount }}</strong>
+      </div>
+    }
+  </header>
 
   @if (orderDraft) {
-    <p>Total to pay: <strong>Rs. {{ orderDraft.amount }}</strong></p>
-    <div class="actions">
-      <button mat-flat-button (click)="processPayment('success')">Simulate Success</button>
-      <button mat-button color="warn" (click)="processPayment('failed')">Simulate Failure</button>
-      <button mat-button (click)="processPayment('random')">Random Result</button>
+    <div class="payment-grid">
+      <mat-card class="panel order-summary">
+        <div class="panel-head">
+          <h3>Order Summary</h3>
+          <span class="chip">Preview</span>
+        </div>
+
+        <div class="line-item">
+          <span>Subtotal</span>
+          <strong>Rs. {{ orderDraft.amount }}</strong>
+        </div>
+        <div class="line-item">
+          <span>Tax (10%)</span>
+          <strong>Rs. {{ orderDraft.amount * 0.1 }}</strong>
+        </div>
+        <div class="line-item total">
+          <span>Grand Total</span>
+          <strong>Rs. {{ orderDraft.amount * 1.1 }}</strong>
+        </div>
+
+        <p class="hint">This is a demo payment page. Use the actions panel to simulate different outcomes.</p>
+      </mat-card>
+
+      <mat-card class="panel actions-panel">
+        <div class="panel-head">
+          <h3>Choose Outcome</h3>
+          <span class="chip chip-alt">Demo Mode</span>
+        </div>
+
+        <div class="method-cards">
+          <article class="method-card">
+            <h4>Successful Payment</h4>
+            <p>Simulates a completed payment and places the order.</p>
+            <button mat-flat-button class="btn-success" (click)="processPayment('success')">Simulate Success</button>
+          </article>
+
+          <article class="method-card">
+            <h4>Failed Payment</h4>
+            <p>Simulates a failed transaction and marks the order as failed.</p>
+            <button mat-flat-button class="btn-failed" (click)="processPayment('failed')">Simulate Failure</button>
+          </article>
+
+          <article class="method-card">
+            <h4>Random Payment</h4>
+            <p>Simulates a random gateway response for testing both flows.</p>
+            <button mat-stroked-button class="btn-random" (click)="processPayment('random')">Random Result</button>
+          </article>
+        </div>
+      </mat-card>
     </div>
   } @else {
-    <p>No checkout data found.</p>
+    <mat-card class="panel empty-panel">
+      <h3>No checkout data found</h3>
+      <p>Please start checkout again from your cart.</p>
+      <button mat-flat-button color="primary" routerLink="/customer/cart">Go to Cart</button>
+    </mat-card>
   }
-</mat-card>
+</section>

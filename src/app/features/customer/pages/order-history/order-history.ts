@@ -18,7 +18,7 @@ export class OrderHistory implements OnInit, OnDestroy {
   constructor(
     private readonly authService: AuthService,
     private readonly orderService: OrderService,
-    private readonly cdr: ChangeDetectorRef, // ← add this
+    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -27,7 +27,7 @@ export class OrderHistory implements OnInit, OnDestroy {
 
       if (!user) {
         this.orders = [];
-        this.cdr.markForCheck(); // ← add this
+        this.cdr.markForCheck();
         return;
       }
 
@@ -35,9 +35,50 @@ export class OrderHistory implements OnInit, OnDestroy {
         .watchCustomerOrders(user.uid)
         .subscribe((orders) => {
           this.orders = orders;
-          this.cdr.markForCheck(); // ← add this
+          this.cdr.markForCheck();
         });
     });
+  }
+
+  get totalSpent(): number {
+    return this.orders.reduce((sum, order) => sum + Number(order.amount ?? 0), 0);
+  }
+
+  get successfulOrdersCount(): number {
+    return this.orders.filter((order) => order.paymentStatus === 'success').length;
+  }
+
+  get successRate(): number {
+    if (!this.orders.length) {
+      return 0;
+    }
+    return (this.successfulOrdersCount / this.orders.length) * 100;
+  }
+
+  getOrderItemCount(order: Order): number {
+    return order.items.reduce((count, item) => count + Number(item.quantity ?? 0), 0);
+  }
+
+  formatCurrency(amount: number): string {
+    return new Intl.NumberFormat('en-IN').format(Math.round(Number(amount ?? 0)));
+  }
+
+  formatPercent(value: number): string {
+    return `${Math.round(value)}%`;
+  }
+
+  getOrderStatusClass(status: Order['status']): string {
+    return status === 'placed' ? 'badge placed' : 'badge failed';
+  }
+
+  getPaymentStatusClass(status: Order['paymentStatus']): string {
+    if (status === 'success') {
+      return 'badge success';
+    }
+    if (status === 'pending') {
+      return 'badge pending';
+    }
+    return 'badge failed';
   }
 
   ngOnDestroy(): void {
