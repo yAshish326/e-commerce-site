@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Order, Product } from '../../models/app.models';
+import { Order, Product } from '../models/app.models';
 import { ChartConfiguration } from 'chart.js';
 
 export interface DashboardMetrics {

@@ -5,6 +5,8 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { OrderService } from '../../../../core/services/order.service';
 import { ProductService } from '../../../../core/services/product.service';
 import { UiService } from '../../../../shared/services/ui.service';
+import { ChartConfiguration } from 'chart.js';
+import { DashboardAnalyticsService } from '../../../../core/services/dashboard-analytics.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +25,10 @@ export class Dashboard implements OnInit, OnDestroy {
   private productsSub?: Subscription;
   private ordersSub?: Subscription;
   private authSub?: Subscription;
+  // Chart configurations
+  revenueChartConfig: ChartConfiguration | null = null;
+  ordersChartConfig: ChartConfiguration | null = null;
+  categoryChartConfig: ChartConfiguration | null = null;
 
   constructor(
     private readonly authService: AuthService,
@@ -30,6 +36,7 @@ export class Dashboard implements OnInit, OnDestroy {
     private readonly orderService: OrderService,
     private readonly ui: UiService,
     private readonly cdr: ChangeDetectorRef,
+    private readonly analyticsService: DashboardAnalyticsService,
   ) {}
 
   get sellerOrders(): Order[] {
@@ -240,6 +247,9 @@ export class Dashboard implements OnInit, OnDestroy {
           this.sellerId = '';
           this.products = [];
           this.orders = [];
+          this.revenueChartConfig = null;
+          this.ordersChartConfig = null;
+          this.categoryChartConfig = null;
           this.disconnectSellerStreams();
           this.cdr.markForCheck();
           return;
@@ -269,6 +279,7 @@ export class Dashboard implements OnInit, OnDestroy {
       .subscribe((products) => {
         Promise.resolve().then(() => {
           this.products = products;
+          this.generateCharts();
           this.cdr.markForCheck();
         });
       });
@@ -278,9 +289,11 @@ export class Dashboard implements OnInit, OnDestroy {
       .subscribe((orders) => {
         Promise.resolve().then(() => {
           this.orders = orders;
+          this.generateCharts();
           this.cdr.markForCheck();
         });
       });
+
   }
 
   private disconnectSellerStreams(): void {
@@ -302,5 +315,14 @@ export class Dashboard implements OnInit, OnDestroy {
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     return startOfDay.getTime();
+  }
+  private generateCharts(): void {
+    try {
+      this.revenueChartConfig = this.analyticsService.generateRevenueChart(this.orders);
+      this.ordersChartConfig = this.analyticsService.generateOrdersChart(this.orders);
+      this.categoryChartConfig = this.analyticsService.generateCategoryChart(this.products);
+    } catch (error) {
+      console.error('Error generating charts:', error);
+    }
   }
 }

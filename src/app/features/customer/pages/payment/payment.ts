@@ -1,74 +1,277 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Order } from '../../../../core/models/app.models';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CartService } from '../../../../core/services/cart.service';
 import { OrderService } from '../../../../core/services/order.service';
 import { WalletService } from '../../../../core/services/wallet.service';
 import { UiService } from '../../../../shared/services/ui.service';
+import { PaymentGatewayService } from './services/payment-gateway.service';
+import {
+  CouponDiscount,
+  PaymentDraft,
+  PaymentMethod,
+  PaymentRequest,
+  PaymentResult,
+  PaymentStatus,
+  PaymentSummary,
+  UpiApp,
+} from './payment.models';
+import { CardPaymentPayload } from './components/card-payment/card-payment.component';
 
 @Component({
   selector: 'app-payment',
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './payment.html',
   styleUrl: './payment.scss',
 })
-export class Payment {
+export class Payment implements OnInit, OnDestroy {
+  private readonly authService = inject(AuthService);
+  private readonly cartService = inject(CartService);
+  private readonly walletService = inject(WalletService);
+  private readonly orderService = inject(OrderService);
+  private readonly paymentGateway = inject(PaymentGatewayService);
+  private readonly ui = inject(UiService);
+  private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
+
   readonly orderDraft = history.state?.['orderDraft'] as
-    | Omit<Order, 'id' | 'createdAt' | 'status' | 'paymentStatus'>
+    | PaymentDraft
     | undefined;
 
-  paymentResult: 'success' | 'failed' | null = null;
+  selectedMethod: PaymentMethod = 'upi';
+  paymentStatus: PaymentStatus = 'idle';
+  paymentTitle = '';
+  paymentMessage = '';
+  paymentReferenceId = '';
+  walletBalance = 0;
+  appliedCoupon: CouponDiscount | null = null;
 
-  constructor(
-    private readonly orderService: OrderService,
-    private readonly cartService: CartService,
-    private readonly walletService: WalletService, // ← added
-    private readonly authService: AuthService,     // ← added
-    private readonly ui: UiService,
-    private readonly router: Router,
-  ) {}
+  private currentUid = '';
+  private authSub?: Subscription;
+  private walletSub?: Subscription;
+  private paymentSub?: Subscription;
 
-  async processPayment(force: 'success' | 'failed' | 'random'): Promise<void> {
+  get subtotal(): number {
+    return Number(this.orderDraft?.amount ?? 0);
+  }
+
+  get tax(): number {
+    return this.subtotal * 0.1;
+  }
+
+  get discount(): number {
+    return this.appliedCoupon?.amount ?? 0;
+  }
+
+  get grandTotal(): number {
+    return Math.max(0, this.subtotal + this.tax - this.discount);
+  }
+
+  get summary(): PaymentSummary {
+    return {
+      subtotal: this.subtotal,
+      tax: this.tax,
+      discount: this.discount,
+      total: this.grandTotal,
+    };
+  }
+
+  get statusMessage(): string {
+    return this.paymentStatus === 'idle' ? 'Choose a payment method to continue.' : this.paymentMessage;
+  }
+
+  get methodLabel(): string {
+    return this.selectedMethod === 'upi' ? 'UPI' : this.selectedMethod === 'card' ? 'Card' : 'Wallet';
+  }
+
+  get canUseWallet(): boolean {
+    return this.walletBalance >= this.grandTotal;
+  }
+
+  get isProcessing(): boolean {
+    return this.paymentStatus === 'processing';
+  }
+
+  ngOnInit(): void {
     if (!this.orderDraft) {
-      this.ui.toast('No order found. Start checkout again.');
-      await this.router.navigate(['/customer/cart']);
+      void this.router.navigate(['/customer/cart']);
       return;
     }
 
-    this.ui.setLoading(true);
-    try {
-      const result =
-        force === 'random'
-          ? Math.random() > 0.3
-            ? 'success'
-            : 'failed'
-          : force;
+    this.authSub = this.authService.authState$.subscribe((user) => {
+      this.currentUid = user?.uid ?? '';
+      this.walletSub?.unsubscribe();
 
-      this.paymentResult = result;
-
-      await this.orderService.placeOrder({
-        ...this.orderDraft,
-        status: result === 'success' ? 'placed' : 'failed',
-        paymentStatus: result,
-      });
-
-      if (result === 'success') {
-        // ✅ Deduct wallet balance
-        await this.walletService.deductMoney(
-          this.orderDraft.uid,
-          this.orderDraft.amount * 1.1, // total including tax
-        );
-        // ✅ Clear cart
-        await this.cartService.clearCart(this.orderDraft.uid);
+      if (!this.currentUid) {
+        return;
       }
 
-      this.ui.toast(`Payment ${result}`);
-      await this.router.navigate(['/customer/orders']);
+      this.walletSub = this.walletService.watchBalance(this.currentUid).subscribe((balance) => {
+        this.walletBalance = balance;
+        this.cdr.markForCheck();
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.authSub?.unsubscribe();
+    this.walletSub?.unsubscribe();
+    this.paymentSub?.unsubscribe();
+  }
+
+  selectMethod(method: PaymentMethod): void {
+    this.selectedMethod = method;
+
+    if (this.paymentStatus !== 'processing') {
+      this.paymentStatus = 'idle';
+      this.paymentTitle = '';
+      this.paymentMessage = '';
+      this.paymentReferenceId = '';
+    }
+
+    this.cdr.markForCheck();
+  }
+
+  applyCoupon(code: string): void {
+    const normalized = code.trim().toUpperCase();
+    const discount = this.calculateCouponDiscount(normalized);
+
+    if (!discount) {
+      this.appliedCoupon = null;
+      this.ui.toast('Coupon not found');
+      this.cdr.markForCheck();
+      return;
+    }
+
+    this.appliedCoupon = discount;
+    this.ui.toast(`${discount.code} applied`);
+    this.cdr.markForCheck();
+  }
+
+  submitUpiPayment(payload: { upiId: string; upiApp: UpiApp }): void {
+    this.startPayment({
+      method: 'upi',
+      upiId: payload.upiId,
+      upiApp: payload.upiApp,
+    });
+  }
+
+  submitCardPayment(payload: CardPaymentPayload): void {
+    this.startPayment({
+      method: 'card',
+      cardBrand: payload.cardBrand,
+      cardholderName: payload.cardholderName,
+      cardNumberMasked: payload.cardNumber,
+    });
+  }
+
+  submitWalletPayment(): void {
+    this.startPayment({ method: 'wallet', walletBalance: this.walletBalance });
+  }
+
+  retryPayment(): void {
+    this.paymentStatus = 'idle';
+    this.paymentTitle = '';
+    this.paymentMessage = '';
+    this.paymentReferenceId = '';
+    this.cdr.markForCheck();
+  }
+
+  async goToOrders(): Promise<void> {
+    await this.router.navigate(['/customer/orders']);
+  }
+
+  private startPayment(extra: Partial<PaymentRequest>): void {
+    if (!this.orderDraft || !this.currentUid) {
+      this.ui.toast('No order found. Start checkout again.');
+      void this.router.navigate(['/customer/cart']);
+      return;
+    }
+
+    if (this.paymentStatus === 'processing') {
+      return;
+    }
+
+    this.paymentStatus = 'processing';
+    this.paymentTitle = '';
+    this.paymentMessage = '';
+    this.paymentReferenceId = '';
+    this.cdr.markForCheck();
+
+    const request: PaymentRequest = {
+      uid: this.currentUid,
+      amount: this.grandTotal,
+      method: extra.method ?? this.selectedMethod,
+      orderDraft: this.orderDraft,
+      couponCode: this.appliedCoupon?.code,
+      ...extra,
+    };
+
+    this.paymentSub?.unsubscribe();
+    this.paymentSub = this.paymentGateway.process(request).subscribe({
+      next: async (result) => {
+        await this.finalizePayment(result, request);
+      },
+      error: async (error) => {
+        this.paymentStatus = 'failed';
+        this.paymentTitle = 'Payment Failed';
+        this.paymentMessage = error?.message ?? 'Unexpected payment error';
+        this.paymentReferenceId = '';
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  private async finalizePayment(result: PaymentResult, request: PaymentRequest): Promise<void> {
+    const paymentStatus: PaymentStatus = result.success ? 'success' : 'failed';
+
+    try {
+      await this.orderService.placeOrder({
+        ...this.orderDraft!,
+        amount: this.grandTotal,
+        status: result.success ? 'placed' : 'failed',
+        paymentStatus: result.success ? 'success' : 'failed',
+      });
+
+      if (result.success) {
+        if (request.method === 'wallet') {
+          await this.walletService.deductMoney(this.currentUid, this.grandTotal);
+        }
+
+        await this.cartService.clearCart(this.currentUid);
+      }
+
+      this.paymentStatus = paymentStatus;
+      this.paymentTitle = result.success ? 'Payment Successful' : 'Payment Failed';
+      this.paymentMessage = result.message;
+      this.paymentReferenceId = result.referenceId;
+      this.ui.toast(result.success ? 'Payment successful' : 'Payment failed');
     } catch (error: any) {
+      this.paymentStatus = 'failed';
+      this.paymentTitle = 'Payment Failed';
+      this.paymentMessage = error?.message ?? 'Unable to complete checkout';
+      this.paymentReferenceId = result.referenceId;
       this.ui.toast(error?.message ?? 'Payment failed');
     } finally {
-      this.ui.setLoading(false);
+      this.cdr.markForCheck();
     }
+  }
+
+  private calculateCouponDiscount(code: string): CouponDiscount | null {
+    const discountMap: Record<string, (subtotal: number) => CouponDiscount> = {
+      SAVE10: (subtotal) => ({ code: 'SAVE10', label: '10% off', amount: subtotal * 0.1 }),
+      WELCOME15: (subtotal) => ({ code: 'WELCOME15', label: '15% off, capped at Rs. 250', amount: Math.min(subtotal * 0.15, 250) }),
+      FLAT100: (subtotal) => ({ code: 'FLAT100', label: 'Flat Rs. 100 off', amount: subtotal >= 999 ? 100 : 0 }),
+    };
+
+    const factory = discountMap[code];
+    if (!factory) {
+      return null;
+    }
+
+    const discount = factory(this.subtotal);
+    return discount.amount > 0 ? discount : null;
   }
 }

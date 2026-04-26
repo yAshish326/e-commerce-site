@@ -510,9 +510,35 @@ button:focus-visible,
   outline-offset: 2px;
 }
 
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 18px;
+  margin-top: 6px;
+  align-items: start;
+}
+
+.chart-card {
+  display: block;
+  align-self: start;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 16px !important;
+  padding: 0 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06) !important;
+  background: #fff !important;
+}
+
+.chart-card {
+  width: 100%;
+}
+
 @media (max-width: 1100px) {
   .dashboard-header h2 {
     font-size: 30px;
+  }
+
+  .charts-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 
   .kpi-grid {
@@ -566,6 +592,10 @@ button:focus-visible,
   }
 
   .metric-rail {
+    grid-template-columns: 1fr;
+  }
+
+  .charts-grid {
     grid-template-columns: 1fr;
   }
 }

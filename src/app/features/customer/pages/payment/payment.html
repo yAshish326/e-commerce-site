@@ -1,74 +1,116 @@
 <section class="payment-page">
   <header class="payment-hero">
-    <div>
-      <p class="eyebrow">Secure Checkout</p>
-      <h2>Payment Gateway</h2>
-      <p class="hero-copy">Review your total and choose how you want to simulate payment for this order.</p>
+    <div class="hero-copy">
+      <p class="eyebrow">Secure checkout</p>
+      <h2>Complete your payment</h2>
+      <p class="hero-copy-text">A clean checkout flow with UPI, card, and wallet options, built to feel like a modern payments experience.</p>
+
+      <div class="hero-meta">
+        <span class="secure-badge">
+          <mat-icon>lock</mat-icon>
+          Secure Payment
+        </span>
+        <span class="powered-by">Powered by Razorpay / Stripe (mock)</span>
+      </div>
     </div>
+
     @if (orderDraft) {
-      <div class="hero-badge">
-        <span>Total</span>
-        <strong>Rs. {{ orderDraft.amount }}</strong>
+      <div class="hero-total">
+        <span>Grand Total</span>
+        <strong>Rs. {{ grandTotal.toFixed(2) }}</strong>
+        <small>Subtotal Rs. {{ subtotal.toFixed(2) }} + Tax Rs. {{ tax.toFixed(2) }}</small>
       </div>
     }
   </header>
 
-  @if (orderDraft) {
-    <div class="payment-grid">
-      <mat-card class="panel order-summary">
-        <div class="panel-head">
-          <h3>Order Summary</h3>
-          <span class="chip">Preview</span>
-        </div>
-
-        <div class="line-item">
-          <span>Subtotal</span>
-          <strong>Rs. {{ orderDraft.amount }}</strong>
-        </div>
-        <div class="line-item">
-          <span>Tax (10%)</span>
-          <strong>Rs. {{ orderDraft.amount * 0.1 }}</strong>
-        </div>
-        <div class="line-item total">
-          <span>Grand Total</span>
-          <strong>Rs. {{ orderDraft.amount * 1.1 }}</strong>
-        </div>
-
-        <p class="hint">This is a demo payment page. Use the actions panel to simulate different outcomes.</p>
-      </mat-card>
-
-      <mat-card class="panel actions-panel">
-        <div class="panel-head">
-          <h3>Choose Outcome</h3>
-          <span class="chip chip-alt">Demo Mode</span>
-        </div>
-
-        <div class="method-cards">
-          <article class="method-card">
-            <h4>Successful Payment</h4>
-            <p>Simulates a completed payment and places the order.</p>
-            <button mat-flat-button class="btn-success" (click)="processPayment('success')">Simulate Success</button>
-          </article>
-
-          <article class="method-card">
-            <h4>Failed Payment</h4>
-            <p>Simulates a failed transaction and marks the order as failed.</p>
-            <button mat-flat-button class="btn-failed" (click)="processPayment('failed')">Simulate Failure</button>
-          </article>
-
-          <article class="method-card">
-            <h4>Random Payment</h4>
-            <p>Simulates a random gateway response for testing both flows.</p>
-            <button mat-stroked-button class="btn-random" (click)="processPayment('random')">Random Result</button>
-          </article>
-        </div>
-      </mat-card>
-    </div>
-  } @else {
-    <mat-card class="panel empty-panel">
+  @if (!orderDraft) {
+    <mat-card class="empty-panel">
+      <mat-icon>shopping_cart</mat-icon>
       <h3>No checkout data found</h3>
-      <p>Please start checkout again from your cart.</p>
+      <p>Please return to your cart and start checkout again.</p>
       <button mat-flat-button color="primary" routerLink="/customer/cart">Go to Cart</button>
     </mat-card>
+  } @else {
+    <div class="payment-grid">
+      <div class="payment-main">
+        <app-payment-method-selector
+          [selectedMethod]="selectedMethod"
+          (methodSelected)="selectMethod($event)"
+        ></app-payment-method-selector>
+
+        @switch (selectedMethod) {
+          @case ('upi') {
+            <app-upi-payment
+              [processing]="isProcessing"
+              (submitPayment)="submitUpiPayment($event)"
+            ></app-upi-payment>
+          }
+
+          @case ('card') {
+            <app-card-payment
+              [processing]="isProcessing"
+              (submitPayment)="submitCardPayment($event)"
+            ></app-card-payment>
+          }
+
+          @case ('wallet') {
+            <mat-card class="wallet-card">
+              <div class="wallet-head">
+                <div>
+                  <p class="eyebrow">Optional wallet</p>
+                  <h3>Wallet Checkout</h3>
+                </div>
+                <span class="wallet-pill">Balance</span>
+              </div>
+
+              <div class="wallet-balance">
+                <span>Available balance</span>
+                <strong>Rs. {{ walletBalance.toFixed(2) }}</strong>
+              </div>
+
+              <p class="wallet-copy">Use your wallet balance for instant checkout. If the balance is lower than the payable amount, you can retry using UPI or card.</p>
+
+              @if (!canUseWallet) {
+                <div class="wallet-warning">
+                  <mat-icon>error_outline</mat-icon>
+                  <span>Insufficient wallet balance for this order.</span>
+                </div>
+              }
+
+              <button
+                mat-flat-button
+                color="primary"
+                type="button"
+                [disabled]="isProcessing || !canUseWallet"
+                (click)="submitWalletPayment()"
+              >
+                @if (isProcessing) {
+                  Processing...
+                } @else {
+                  Pay with Wallet
+                }
+              </button>
+            </mat-card>
+          }
+        }
+      </div>
+
+      <aside class="payment-side">
+        <app-order-summary
+          [summary]="summary"
+          [appliedCoupon]="appliedCoupon?.code ?? null"
+          (couponApplied)="applyCoupon($event)"
+        ></app-order-summary>
+
+        <app-payment-status
+          [status]="paymentStatus"
+          [title]="paymentTitle"
+          [message]="statusMessage"
+          [referenceId]="paymentReferenceId"
+          (retry)="retryPayment()"
+          (continueToOrders)="goToOrders()"
+        ></app-payment-status>
+      </aside>
+    </div>
   }
 </section>

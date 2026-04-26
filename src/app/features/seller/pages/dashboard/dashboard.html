@@ -61,6 +61,36 @@
     </article>
   </section>
 
+  <!-- Charts Grid -->
+  @if (revenueChartConfig || ordersChartConfig || categoryChartConfig) {
+    <section class="charts-grid" aria-label="Sales charts">
+      @if (revenueChartConfig) {
+        <app-chart-widget
+          class="chart-card"
+          [chartConfig]="revenueChartConfig"
+          title="Revenue Trend"
+          subtitle="Last 7 days"
+        ></app-chart-widget>
+      }
+      @if (ordersChartConfig) {
+        <app-chart-widget
+          class="chart-card"
+          [chartConfig]="ordersChartConfig"
+          title="Orders by Status"
+          subtitle="Distribution"
+        ></app-chart-widget>
+      }
+      @if (categoryChartConfig) {
+        <app-chart-widget
+          class="chart-card"
+          [chartConfig]="categoryChartConfig"
+          title="Category Distribution"
+          subtitle="Product breakdown"
+        ></app-chart-widget>
+      }
+    </section>
+  }
+
   <section class="insights-grid">
     <mat-card class="panel-card">
       <div class="panel-title-row">
@@ -213,4 +243,5 @@
       }
     </mat-card>
   </section>
+
 </section>
