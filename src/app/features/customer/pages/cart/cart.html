@@ -34,13 +34,16 @@
               <div class="item-details">
                 <h3>{{ item.product.name }}</h3>
                 <p class="item-price">Rs. {{ item.product.price | number }}</p>
+                <p class="item-stock" [class.out-of-stock]="item.product.quantity <= 0">
+                  {{ item.product.quantity <= 0 ? 'Out of stock' : (item.product.quantity + ' left') }}
+                </p>
               </div>
               <div class="item-quantity">
                 <button mat-icon-button class="icon-btn qty-btn" (click)="updateQty(item, -1)" [disabled]="item.quantity <= 1" aria-label="Decrease quantity">
                   -
                 </button>
                 <input type="number" [value]="item.quantity" (change)="onQtyChange(item, $event)" class="qty-input" />
-                <button mat-icon-button class="icon-btn qty-btn" (click)="updateQty(item, 1)" aria-label="Increase quantity">
+                <button mat-icon-button class="icon-btn qty-btn" (click)="updateQty(item, 1)" [disabled]="item.quantity >= item.product.quantity || item.product.quantity <= 0" aria-label="Increase quantity">
                   +
                 </button>
               </div>
@@ -105,9 +108,12 @@
             }
           </div>
 
-          <button mat-flat-button color="primary" (click)="goToCheckout()" class="checkout-btn" [disabled]="walletBalance < total * 1.1">
+          <button mat-flat-button color="primary" (click)="goToCheckout()" class="checkout-btn" [disabled]="walletBalance < total * 1.1 || !canCheckout">
             Proceed to Checkout
           </button>
+          @if (!canCheckout) {
+            <p class="stock-warning">Some items are out of stock. Remove or reduce them to continue.</p>
+          }
           <button mat-stroked-button (click)="continueShopping()" class="continue-btn">
             Continue Shopping
           </button>

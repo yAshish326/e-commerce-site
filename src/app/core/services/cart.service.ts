@@ -96,7 +96,17 @@ export class CartService {
 
     const snapshot = await getDoc(ref);
     const existingQty = Number(snapshot.data()?.['quantity'] ?? 0);
-    const nextQty = Math.max(1, existingQty + safeQuantity);
+    const availableStock = Number(productPayload.quantity ?? 0);
+
+    if (availableStock <= 0) {
+      throw new Error('Product is out of stock');
+    }
+
+    if (existingQty >= availableStock) {
+      throw new Error(`Only ${availableStock} item(s) available`);
+    }
+
+    const nextQty = Math.min(availableStock, Math.max(1, existingQty + safeQuantity));
 
     await setDoc(
       ref,
@@ -110,6 +120,31 @@ export class CartService {
       await deleteDoc(doc(firestore, 'cart', itemId));
       return;
     }
+
+    const cartDoc = await getDoc(doc(firestore, 'cart', itemId));
+    if (!cartDoc.exists()) {
+      return;
+    }
+
+    const item = cartDoc.data() as Partial<CartItem>;
+    const productId = String(item.productId ?? '');
+    let availableStock = Number(item.product?.quantity ?? 0);
+
+    if (productId) {
+      const productDoc = await getDoc(doc(firestore, 'products', productId));
+      if (productDoc.exists()) {
+        availableStock = Number((productDoc.data() as Partial<Product>)?.quantity ?? 0);
+      }
+    }
+
+    if (availableStock <= 0) {
+      throw new Error('Product is out of stock');
+    }
+
+    if (quantity > availableStock) {
+      throw new Error(`Only ${availableStock} item(s) available`);
+    }
+
     await setDoc(doc(firestore, 'cart', itemId), { quantity }, { merge: true });
   }
 

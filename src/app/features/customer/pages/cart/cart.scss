@@ -173,6 +173,17 @@
     font-weight: 600;
     margin: 0;
   }
+
+  .item-stock {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: #166534;
+  }
+
+  .item-stock.out-of-stock {
+    color: #991b1b;
+  }
 }
 
 .item-quantity {
@@ -399,6 +410,12 @@
   &:hover {
     background: rgba(249, 115, 22, 0.08);
   }
+}
+
+.stock-warning {
+  margin: 4px 0 10px;
+  color: #b45309;
+  font-size: 0.84rem;
 }
 
 // Responsive adjustments

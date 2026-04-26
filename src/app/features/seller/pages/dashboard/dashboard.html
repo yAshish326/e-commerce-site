@@ -56,8 +56,12 @@
       <strong>{{ formatPercent(catalogQualityRate) }}</strong>
     </article>
     <article class="mini-metric">
-      <p>Pending risk share</p>
+      <p>Pending risk share (low stock)</p>
       <strong>{{ formatPercent(pendingRiskShare) }}</strong>
+    </article>
+    <article class="mini-metric">
+      <p>Canceled orders</p>
+      <strong>{{ canceledOrdersCount }}</strong>
     </article>
   </section>
 
@@ -100,6 +104,10 @@
       <div class="task-row">
         <span>Failed payments to review</span>
         <strong class="severity-high">{{ failedPaymentsCount }}</strong>
+      </div>
+      <div class="task-row">
+        <span>Canceled orders</span>
+        <strong class="severity-muted">{{ canceledOrdersCount }}</strong>
       </div>
       <div class="task-row">
         <span>Products without image</span>
@@ -156,6 +164,7 @@
                 <p class="order-meta">{{ order.customer }} • {{ formatDate(order.createdAt) }}</p>
               </div>
               <div class="order-right">
+                <span [class]="getOrderStatusClass(order.status)">{{ order.status }}</span>
                 <span class="chip" [class.warn]="order.paymentStatus === 'pending'" [class.danger]="order.paymentStatus === 'failed'">
                   {{ order.paymentStatus }}
                 </span>

@@ -233,6 +233,9 @@ export class Payment implements OnInit, OnDestroy {
         amount: this.grandTotal,
         status: result.success ? 'placed' : 'failed',
         paymentStatus: result.success ? 'success' : 'failed',
+        paymentMethod: request.method,
+        couponCode: this.appliedCoupon?.code,
+        paymentReferenceId: result.referenceId,
       });
 
       if (result.success) {

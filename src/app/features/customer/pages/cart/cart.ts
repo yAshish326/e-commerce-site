@@ -40,6 +40,18 @@ private deferStateUpdate(update: () => void): void {
     return this.cartItems.reduce((sum, item) => sum + item.quantity * item.product.price, 0);
   }
 
+  get hasOutOfStockItems(): boolean {
+    return this.cartItems.some((item) => Number(item.product.quantity ?? 0) <= 0);
+  }
+
+  get hasExcessQuantityItems(): boolean {
+    return this.cartItems.some((item) => Number(item.quantity ?? 0) > Number(item.product.quantity ?? 0));
+  }
+
+  get canCheckout(): boolean {
+    return !this.hasOutOfStockItems && !this.hasExcessQuantityItems;
+  }
+
   ngOnInit(): void {
     this.authSub = this.authService.authState$.subscribe((user) => {
       this.cartSub?.unsubscribe();
@@ -84,7 +96,17 @@ private deferStateUpdate(update: () => void): void {
     }
     const newQty = item.quantity + delta;
     if (newQty < 1) return;
-    await this.cartService.updateCartQuantity(item.id, newQty);
+
+    if (newQty > Number(item.product.quantity ?? 0)) {
+      this.ui.toast(`Only ${item.product.quantity} item(s) available`);
+      return;
+    }
+
+    try {
+      await this.cartService.updateCartQuantity(item.id, newQty);
+    } catch (error: any) {
+      this.ui.toast(error?.message ?? 'Could not update quantity');
+    }
   }
 
   onQtyChange(item: CartItem, event: Event): void {
@@ -94,8 +116,16 @@ private deferStateUpdate(update: () => void): void {
       target.value = item.quantity.toString();
       return;
     }
+    if (newQty > Number(item.product.quantity ?? 0)) {
+      target.value = item.quantity.toString();
+      this.ui.toast(`Only ${item.product.quantity} item(s) available`);
+      return;
+    }
+
     if (item.id) {
-      this.cartService.updateCartQuantity(item.id, newQty);
+      this.cartService.updateCartQuantity(item.id, newQty).catch((error: any) => {
+        this.ui.toast(error?.message ?? 'Could not update quantity');
+      });
     }
   }
 
@@ -116,6 +146,11 @@ private deferStateUpdate(update: () => void): void {
   }
 
   goToCheckout(): void {
+    if (!this.canCheckout) {
+      this.ui.toast('Some items are out of stock. Please update your cart first.');
+      return;
+    }
+
     this.router.navigate(['/customer/checkout']);
   }
 

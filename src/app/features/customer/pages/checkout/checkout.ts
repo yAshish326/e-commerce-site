@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { CartItem, OrderAddress } from '../../../../core/models/app.models';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CartService } from '../../../../core/services/cart.service';
+import { ProductService } from '../../../../core/services/product.service';
 import { UiService } from '../../../../shared/services/ui.service';
 
 interface SavedCheckoutAddress extends OrderAddress {
@@ -25,6 +26,7 @@ export class Checkout implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly cartService = inject(CartService);
+  private readonly productService = inject(ProductService);
   private readonly ui = inject(UiService);
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
@@ -170,6 +172,12 @@ export class Checkout implements OnInit, OnDestroy {
       return;
     }
 
+    const stockIssue = await this.findStockIssue();
+    if (stockIssue) {
+      this.ui.toast(stockIssue);
+      return;
+    }
+
     const uid = await this.authService.getCurrentUidAsync();
     if (!uid) {
       return;
@@ -196,6 +204,27 @@ export class Checkout implements OnInit, OnDestroy {
         },
       },
     });
+  }
+
+  private async findStockIssue(): Promise<string | null> {
+    for (const item of this.cartItems) {
+      if (!item.productId) {
+        continue;
+      }
+
+      const snapshot = await this.productService.getProductSnapshot(item.productId);
+      const available = Number(snapshot?.quantity ?? 0);
+
+      if (available <= 0) {
+        return `${item.product.name} is out of stock`;
+      }
+
+      if (item.quantity > available) {
+        return `Only ${available} unit(s) available for ${item.product.name}`;
+      }
+    }
+
+    return null;
   }
 
   private loadSavedAddresses(uid: string): void {

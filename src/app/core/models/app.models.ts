@@ -52,8 +52,11 @@ export interface Order {
   uid: string;
   items: CartItem[];
   amount: number;
-  status: 'placed' | 'failed';
+  status: 'placed' | 'failed' | 'canceled';
   paymentStatus: 'success' | 'failed' | 'pending';
+  paymentMethod?: 'upi' | 'card' | 'wallet';
+  couponCode?: string;
+  paymentReferenceId?: string;
   sellerIds: string[];
   address: OrderAddress;
   createdAt: number;

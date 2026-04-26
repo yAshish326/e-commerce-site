@@ -51,7 +51,7 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   get successfulPaymentsCount(): number {
-    return this.sellerOrders.filter((order) => order.paymentStatus === 'success').length;
+    return this.sellerOrders.filter((order) => order.paymentStatus === 'success' && order.status !== 'canceled').length;
   }
 
   get pendingPaymentsCount(): number {
@@ -62,16 +62,20 @@ export class Dashboard implements OnInit, OnDestroy {
     return this.sellerOrders.filter((order) => order.paymentStatus === 'failed').length;
   }
 
+  get canceledOrdersCount(): number {
+    return this.sellerOrders.filter((order) => order.status === 'canceled').length;
+  }
+
   get totalRevenue(): number {
     return this.sellerOrders
-      .filter((order) => order.paymentStatus === 'success')
+      .filter((order) => order.paymentStatus === 'success' && order.status !== 'canceled')
       .reduce((sum, order) => sum + this.getSellerOrderTotal(order), 0);
   }
 
   get todayRevenue(): number {
     const startOfDay = this.getStartOfDayTimestamp();
     return this.sellerOrders
-      .filter((order) => order.paymentStatus === 'success' && order.createdAt >= startOfDay)
+      .filter((order) => order.paymentStatus === 'success' && order.status !== 'canceled' && order.createdAt >= startOfDay)
       .reduce((sum, order) => sum + this.getSellerOrderTotal(order), 0);
   }
 
@@ -82,7 +86,7 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   get averageOrderValue(): number {
-    const paidOrders = this.sellerOrders.filter((order) => order.paymentStatus === 'success');
+    const paidOrders = this.sellerOrders.filter((order) => order.paymentStatus === 'success' && order.status !== 'canceled');
     if (paidOrders.length === 0) {
       return 0;
     }
@@ -122,11 +126,15 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   get pendingRiskShare(): number {
-    if (this.totalRevenue + this.pendingRevenue === 0) {
+    if (this.products.length === 0) {
       return 0;
     }
 
-    return (this.pendingRevenue / (this.totalRevenue + this.pendingRevenue)) * 100;
+    return (this.lowStockProductsCount / this.products.length) * 100;
+  }
+
+  get lowStockProductsCount(): number {
+    return this.products.filter((product) => Number(product.quantity ?? 0) > 0 && Number(product.quantity ?? 0) < 5).length;
   }
 
   get productsMissingImage(): number {
@@ -198,6 +206,18 @@ export class Dashboard implements OnInit, OnDestroy {
 
   formatPercent(value: number): string {
     return `${value.toFixed(1)}%`;
+  }
+
+  getOrderStatusClass(status: Order['status']): string {
+    if (status === 'placed') {
+      return 'chip placed';
+    }
+
+    if (status === 'canceled') {
+      return 'chip canceled';
+    }
+
+    return 'chip failed';
   }
 
   getProductInitial(name: string): string {

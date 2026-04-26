@@ -79,6 +79,16 @@
                 }
               </mat-list>
             </div>
+
+            <div class="action-row">
+              @if (canCancelOrder(order)) {
+                <button mat-stroked-button color="warn" type="button" (click)="cancelOrder(order)">
+                  Cancel Order
+                </button>
+              } @else {
+                <span class="action-note">This order can no longer be canceled.</span>
+              }
+            </div>
           </div>
         </mat-expansion-panel>
       }

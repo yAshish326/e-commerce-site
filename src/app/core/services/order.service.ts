@@ -1,5 +1,5 @@
 import { Injectable, NgZone, inject } from '@angular/core';
-import { addDoc, collection, onSnapshot, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { firestore } from '../firebase/firebase.client';
 import { Order } from '../models/app.models';
@@ -16,6 +16,12 @@ export class OrderService {
       createdAt: Date.now(),
     });
     return ref.id;
+  }
+
+  async cancelOrder(orderId: string): Promise<void> {
+    await updateDoc(doc(firestore, 'orders', orderId), {
+      status: 'canceled',
+    });
   }
 
   watchCustomerOrders(uid: string): Observable<Order[]> {

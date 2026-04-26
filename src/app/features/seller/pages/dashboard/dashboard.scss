@@ -344,6 +344,10 @@ mat-card h3 {
   color: #b91c1c;
 }
 
+.task-row strong.severity-muted {
+  color: #475569;
+}
+
 .order-list,
 .product-list {
   display: grid;
@@ -488,6 +492,12 @@ mat-card h3 {
   color: #991b1b;
   background: #fee2e2;
   border-color: #fca5a5;
+}
+
+.chip.canceled {
+  color: #334155;
+  background: #e2e8f0;
+  border-color: #cbd5e1;
 }
 
 .product-name {

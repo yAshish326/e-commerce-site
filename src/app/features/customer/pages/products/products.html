@@ -54,13 +54,16 @@
         <div class="card-body">
           <h3 class="product-name">{{ product.name }}</h3>
           <p class="product-price">₹ {{ product.price | number }}</p>
+          <p class="stock-info" [class.out-of-stock]="isOutOfStock(product)">
+            {{ getStockLabel(product) }}
+          </p>
 
           <div class="card-actions">
             <button class="btn btn-outline" [routerLink]="product.id ? ['/customer/products', product.id] : ['/customer/products']">
               View Details
             </button>
-            <button class="btn btn-primary" (click)="addToCart(product)">
-              🛒 Add to Cart
+            <button class="btn btn-primary" [disabled]="isOutOfStock(product)" (click)="addToCart(product)">
+              {{ isOutOfStock(product) ? 'Out of Stock' : '🛒 Add to Cart' }}
             </button>
           </div>
         </div>

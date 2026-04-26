@@ -80,19 +80,19 @@ export class DashboardAnalyticsService {
    * Generate orders distribution chart (by status)
    */
   generateOrdersChart(orders: Order[]): ChartConfiguration {
-    const success = orders.filter((o) => o.paymentStatus === 'success').length;
-    const pending = orders.filter((o) => o.paymentStatus === 'pending').length;
+    const success = orders.filter((o) => o.paymentStatus === 'success' && o.status !== 'canceled').length;
+    const canceled = orders.filter((o) => o.status === 'canceled').length;
     const failed = orders.filter((o) => o.paymentStatus === 'failed').length;
 
     return {
       type: 'bar',
       data: {
-        labels: ['Success', 'Pending', 'Failed'],
+        labels: ['Success', 'Canceled', 'Failed'],
         datasets: [
           {
             label: 'Orders',
-            data: [success, pending, failed],
-            backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+            data: [success, canceled, failed],
+            backgroundColor: ['#10b981', '#64748b', '#ef4444'],
             borderRadius: 8,
             borderSkipped: false,
           },

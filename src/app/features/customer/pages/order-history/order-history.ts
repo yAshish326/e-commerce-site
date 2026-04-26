@@ -3,6 +3,8 @@ import { Subscription } from 'rxjs';
 import { Order } from '../../../../core/models/app.models';
 import { AuthService } from '../../../../core/services/auth.service';
 import { OrderService } from '../../../../core/services/order.service';
+import { WalletService } from '../../../../core/services/wallet.service';
+import { UiService } from '../../../../shared/services/ui.service';
 
 @Component({
   selector: 'app-order-history',
@@ -12,18 +14,22 @@ import { OrderService } from '../../../../core/services/order.service';
 })
 export class OrderHistory implements OnInit, OnDestroy {
   orders: Order[] = [];
+  private currentUid = '';
   private subscription?: Subscription;
   private authSub?: Subscription;
 
   constructor(
     private readonly authService: AuthService,
     private readonly orderService: OrderService,
+    private readonly walletService: WalletService,
+    private readonly ui: UiService,
     private readonly cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     this.authSub = this.authService.authState$.subscribe((user) => {
       this.subscription?.unsubscribe();
+      this.currentUid = user?.uid ?? '';
 
       if (!user) {
         this.orders = [];
@@ -68,7 +74,15 @@ export class OrderHistory implements OnInit, OnDestroy {
   }
 
   getOrderStatusClass(status: Order['status']): string {
-    return status === 'placed' ? 'badge placed' : 'badge failed';
+    if (status === 'placed') {
+      return 'badge placed';
+    }
+
+    if (status === 'canceled') {
+      return 'badge canceled';
+    }
+
+    return 'badge failed';
   }
 
   getPaymentStatusClass(status: Order['paymentStatus']): string {
@@ -79,6 +93,33 @@ export class OrderHistory implements OnInit, OnDestroy {
       return 'badge pending';
     }
     return 'badge failed';
+  }
+
+  canCancelOrder(order: Order): boolean {
+    return order.status === 'placed';
+  }
+
+  async cancelOrder(order: Order): Promise<void> {
+    if (!order.id || !this.canCancelOrder(order)) {
+      return;
+    }
+
+    const shouldCancel = window.confirm(`Cancel order #${order.id}?`);
+    if (!shouldCancel) {
+      return;
+    }
+
+    try {
+      await this.orderService.cancelOrder(order.id);
+
+      if (order.paymentMethod === 'wallet' && this.currentUid) {
+        await this.walletService.addMoney(this.currentUid, Number(order.amount ?? 0));
+      }
+
+      this.ui.toast('Order canceled');
+    } catch (error: any) {
+      this.ui.toast(error?.message ?? 'Unable to cancel order');
+    }
   }
 
   ngOnDestroy(): void {

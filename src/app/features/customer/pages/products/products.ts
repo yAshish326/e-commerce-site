@@ -91,6 +91,11 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
   }
 
   async addToCart(product: Product): Promise<void> {
+    if (this.isOutOfStock(product)) {
+      this.ui.toast('This product is out of stock');
+      return;
+    }
+
     const uid = await this.authService.getCurrentUidAsync();
     if (!uid) {
       this.ui.toast('Please login first');
@@ -106,6 +111,19 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
           : (error?.message ?? 'Could not add to cart')
       );
     }
+  }
+
+  getStockLabel(product: Product): string {
+    const stock = Number(product.quantity ?? 0);
+    if (stock <= 0) {
+      return 'Out of stock';
+    }
+
+    return `${stock} left`;
+  }
+
+  isOutOfStock(product: Product): boolean {
+    return Number(product.quantity ?? 0) <= 0;
   }
 
   async addToWishlist(product: Product): Promise<void> {

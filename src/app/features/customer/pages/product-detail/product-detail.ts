@@ -38,6 +38,12 @@ export class ProductDetail implements OnInit, OnDestroy {
     this.subscription = this.productService.watchProduct(id).subscribe((product) => {
       this.product = product;
       this.isNotFound = !product;
+
+      if (product) {
+        const available = this.availableQuantity;
+        this.quantity = available === 0 ? 1 : Math.min(this.quantity, available);
+      }
+
       this.cdr.markForCheck();
     });
   }
@@ -51,7 +57,11 @@ export class ProductDetail implements OnInit, OnDestroy {
   }
 
   increaseQuantity(): void {
-    this.quantity = this.quantity + 1;
+    if (this.isOutOfStock) {
+      return;
+    }
+
+    this.quantity = Math.min(this.maxSelectableQuantity, this.quantity + 1);
   }
 
   onQuantityChange(value: string | number): void {
@@ -61,10 +71,15 @@ export class ProductDetail implements OnInit, OnDestroy {
       return;
     }
 
-    this.quantity = Math.max(1, Math.floor(parsed));
+    this.quantity = Math.min(this.maxSelectableQuantity, Math.max(1, Math.floor(parsed)));
   }
 
   async addToCart(): Promise<void> {
+    if (this.isOutOfStock) {
+      this.ui.toast('This product is out of stock');
+      return;
+    }
+
     const uid = await this.authService.getCurrentUidAsync();
     if (!uid || !this.product) {
       this.ui.toast('Please login first');
@@ -76,6 +91,18 @@ export class ProductDetail implements OnInit, OnDestroy {
     } catch (error: any) {
       this.ui.toast(error?.message ?? 'Could not add to cart');
     }
+  }
+
+  get availableQuantity(): number {
+    return Number(this.product?.quantity ?? 0);
+  }
+
+  get isOutOfStock(): boolean {
+    return this.availableQuantity <= 0;
+  }
+
+  get maxSelectableQuantity(): number {
+    return this.availableQuantity > 0 ? this.availableQuantity : 1;
   }
 
   async addToWishlist(): Promise<void> {

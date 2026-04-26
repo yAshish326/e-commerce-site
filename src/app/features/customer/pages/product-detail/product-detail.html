@@ -33,7 +33,9 @@
         <header class="headline">
           <h1 class="product-name">{{ product.name }}</h1>
           <div class="pill-row">
-            <span class="pill">In stock</span>
+            <span class="pill" [class.out-of-stock]="isOutOfStock">
+              {{ isOutOfStock ? 'Out of stock' : (availableQuantity + ' left') }}
+            </span>
             <span class="pill muted">Secure checkout</span>
           </div>
         </header>
@@ -77,16 +79,18 @@
                 [ngModel]="quantity"
                 (ngModelChange)="onQuantityChange($event)"
                 min="1"
+                [max]="maxSelectableQuantity"
                 inputmode="numeric"
                 aria-label="Quantity"
+                [disabled]="isOutOfStock"
               />
-              <button type="button" (click)="increaseQuantity()" aria-label="Increase quantity">+</button>
+              <button type="button" (click)="increaseQuantity()" [disabled]="quantity >= maxSelectableQuantity || isOutOfStock" aria-label="Increase quantity">+</button>
             </div>
           </div>
 
           <div class="actions">
-            <button class="btn btn-primary" type="button" (click)="addToCart()">
-              🛒 Add to Cart
+            <button class="btn btn-primary" type="button" [disabled]="isOutOfStock" (click)="addToCart()">
+              {{ isOutOfStock ? 'Out of Stock' : '🛒 Add to Cart' }}
             </button>
             <button class="btn btn-outline" type="button" (click)="addToWishlist()">
               ♡ Wishlist
