@@ -22,7 +22,6 @@ import { ChartConfiguration } from 'chart.js';
           [type]="chartConfig.type"
           [data]="chartConfig.data"
           [options]="chartConfig.options"
-          [responsive]="true"
         ></canvas>
       </div>
     </mat-card>
