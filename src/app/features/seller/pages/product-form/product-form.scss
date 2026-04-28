@@ -8,11 +8,11 @@
 }
 
 .product-form-header {
-  background: linear-gradient(135deg, #0f172a 0%, #334155 55%, #475569 100%);
+  background: linear-gradient(135deg, #1f2937 0%, #475569 55%, #64748b 100%);
   padding: 32px 28px;
   border-radius: 18px;
   color: white;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
 
   h1 {
     font-size: 28px;
@@ -32,11 +32,11 @@
 .form-card {
   background: white;
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
   padding: 28px !important;
 
   &:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
     transition: box-shadow 0.3s ease;
   }
 }
@@ -74,14 +74,14 @@
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: #f8f9fa;
-  border: 2px solid #e2e8f0;
+  background: #faf7f2;
+  border: 2px solid rgba(148, 163, 184, 0.2);
   border-radius: 10px;
   transition: all 0.3s ease;
 
   &:hover {
-    background: #f0f4f8;
-    border-color: #cbd5e1;
+    background: #f6f1ea;
+    border-color: rgba(148, 163, 184, 0.34);
   }
 
   input[type="file"] {
@@ -114,7 +114,7 @@
   display: flex;
   justify-content: center;
   padding: 16px;
-  background: #f8f9fa;
+  background: #faf7f2;
   border-radius: 12px;
   margin-top: 8px;
 }
@@ -139,14 +139,14 @@
   height: 44px;
   font-size: 14px;
   font-weight: 600;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  background: #c76a2a !important;
   border-radius: 8px;
   letter-spacing: 0.3px;
   transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 12px rgba(199, 106, 42, 0.22);
   }
 }
 
@@ -161,7 +161,7 @@
   color: #ef4444 !important;
 
   &:hover {
-    background: #fee2e2 !important;
+    background: #fff1f1 !important;
   }
 }
 

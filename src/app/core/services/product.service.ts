@@ -20,8 +20,40 @@ import { Product } from '../models/app.models';
 })
 export class ProductService {
   private readonly ngZone = inject(NgZone);
+  private static readonly DEFAULT_ASSET_IMAGE = 'assets/products/default-lucide.svg';
+  private static readonly CATEGORY_FALLBACKS: Record<string, string> = {
+    electronics: 'assets/products/fitness-band.svg',
+    fashion: 'assets/products/backpack.svg',
+    grocery: 'assets/products/coffee.svg',
+    home: 'assets/products/lamp.svg',
+    books: 'assets/products/book.svg',
+    sports: 'assets/products/yoga-mat.svg',
+    beauty: 'assets/products/beauty.svg',
+    office: 'assets/products/office.svg',
+    kitchen: 'assets/products/kitchen.svg',
+    toys: 'assets/products/toys.svg',
+    'pet care': 'assets/products/petcare.svg',
+    stationery: 'assets/products/stationery.svg',
+    health: 'assets/products/health.svg',
+    travel: 'assets/products/travel.svg',
+  };
 
-  readonly categories = ['Electronics', 'Fashion', 'Grocery', 'Home', 'Books', 'Sports'];
+  readonly categories = [
+    'Electronics',
+    'Fashion',
+    'Grocery',
+    'Home',
+    'Books',
+    'Sports',
+    'Beauty',
+    'Office',
+    'Kitchen',
+    'Toys',
+    'Pet Care',
+    'Stationery',
+    'Health',
+    'Travel',
+  ];
 
   watchProducts(): Observable<Product[]> {
     return new Observable<Product[]>((subscriber) => {
@@ -30,6 +62,7 @@ export class ProductService {
           const firestoreItems = snapshot.docs.map((d) => ({
             id: d.id,
             ...(d.data() as Product),
+            imageUrl: this.toAssetImageUrl(d.data() as Product),
           }));
 
           const firestoreIds = new Set(
@@ -55,10 +88,19 @@ export class ProductService {
       const unsub = onSnapshot(doc(firestore, 'products', productId), (snapshot) => {
         this.ngZone.run(() => {
           if (snapshot.exists()) {
-            subscriber.next({ id: snapshot.id, ...(snapshot.data() as Product) });
+            const data = snapshot.data() as Product;
+            subscriber.next({
+              id: snapshot.id,
+              ...data,
+              imageUrl: this.toAssetImageUrl(data),
+            });
             return;
           }
-          subscriber.next(DEMO_PRODUCTS.find((p) => p.id === productId) ?? null);
+
+          const fallback = DEMO_PRODUCTS.find((p) => p.id === productId);
+          subscriber.next(
+            fallback ? { ...fallback, imageUrl: this.toAssetImageUrl(fallback) } : null,
+          );
         });
       });
       return () => unsub();
@@ -76,6 +118,7 @@ export class ProductService {
           const items = snapshot.docs.map((d) => ({
             id: d.id,
             ...(d.data() as Product),
+            imageUrl: this.toAssetImageUrl(d.data() as Product),
           }));
           items.sort((a, b) => b.createdAt - a.createdAt);
           subscriber.next(items);
@@ -113,16 +156,12 @@ export class ProductService {
     return output;
   }
 
-  // ✅ Added inlineImageUrl as 3rd param — matches what product-form.ts passes
   async addProduct(
-    product: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'imageUrl'>,
-    file?: File,
-    inlineImageUrl?: string,
+    product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<void> {
     const timestamp = Date.now();
 
-    // Use base64 inline image if provided, otherwise empty string
-    const imageUrl = inlineImageUrl ?? '';
+    const imageUrl = this.toAssetImageUrl(product);
 
     await addDoc(collection(firestore, 'products'), {
       ...product,
@@ -132,16 +171,12 @@ export class ProductService {
     });
   }
 
-  // ✅ Added inlineImageUrl as 5th param — matches what product-form.ts passes
   async updateProduct(
     productId: string,
     payload: Partial<Omit<Product, 'id' | 'createdAt' | 'sellerId'>>,
     sellerId: string,
-    file?: File,
-    inlineImageUrl?: string,
   ): Promise<void> {
-    // Use new inline image if provided, otherwise keep existing imageUrl
-    const imageUrl = inlineImageUrl ?? payload.imageUrl ?? '';
+    const imageUrl = this.toAssetImageUrl(payload);
 
     await setDoc(
       doc(firestore, 'products', productId),
@@ -157,8 +192,34 @@ export class ProductService {
   async getProductSnapshot(productId: string): Promise<Product | null> {
     const snapshot = await getDoc(doc(firestore, 'products', productId));
     if (!snapshot.exists()) {
-      return DEMO_PRODUCTS.find((p) => p.id === productId) ?? null;
+      const fallback = DEMO_PRODUCTS.find((p) => p.id === productId);
+      return fallback ? { ...fallback, imageUrl: this.toAssetImageUrl(fallback) } : null;
     }
-    return { id: snapshot.id, ...(snapshot.data() as Product) };
+
+    const data = snapshot.data() as Product;
+    return {
+      id: snapshot.id,
+      ...data,
+      imageUrl: this.toAssetImageUrl(data),
+    };
+  }
+
+  private toAssetImageUrl(product: Partial<Product>): string {
+    const raw = (product.imageUrl ?? '').trim();
+
+    if (raw) {
+      const normalized = raw
+        .replaceAll('\\', '/')
+        .replace(/^\.\//, '')
+        .replace(/^\//, '')
+        .replace(/^src\//, '');
+
+      if (normalized.startsWith('assets/')) {
+        return normalized;
+      }
+    }
+
+    const categoryKey = (product.category ?? '').trim().toLowerCase();
+    return ProductService.CATEGORY_FALLBACKS[categoryKey] ?? ProductService.DEFAULT_ASSET_IMAGE;
   }
 }

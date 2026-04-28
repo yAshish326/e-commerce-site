@@ -12,8 +12,6 @@ import { UiService } from '../../../../shared/services/ui.service';
   styleUrl: './product-form.scss',
 })
 export class ProductForm implements OnInit {
-  private static readonly MAX_INLINE_IMAGE_SIZE_BYTES = 350 * 1024;
-
   private readonly fb = inject(FormBuilder);
   private readonly productService = inject(ProductService);
   private readonly authService = inject(AuthService);
@@ -29,10 +27,10 @@ export class ProductForm implements OnInit {
     quantity: [1, [Validators.required, Validators.min(1)]],
     category: ['', Validators.required],
     description: ['', Validators.required],
+    imageUrl: ['assets/products/default-lucide.svg', [Validators.required, Validators.pattern(/^assets\/.+/)]],
   });
 
   productId: string | null = null;
-  imageFile?: File;
   imagePreview = '';
 
   async ngOnInit(): Promise<void> {
@@ -52,28 +50,13 @@ export class ProductForm implements OnInit {
       quantity: product.quantity,
       category: product.category,
       description: product.description,
+      imageUrl: product.imageUrl,
     });
     this.imagePreview = product.imageUrl;
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) {
-      return;
-    }
-
-    if (file.size > ProductForm.MAX_INLINE_IMAGE_SIZE_BYTES) {
-      this.ui.toast('Image too large. Please use an image below 350 KB.');
-      input.value = '';
-      this.imageFile = undefined;
-      return;
-    }
-
-    this.imageFile = file;
-    const reader = new FileReader();
-    reader.onload = () => (this.imagePreview = String(reader.result ?? ''));
-    reader.readAsDataURL(file);
+  onImagePathChange(path: string): void {
+    this.imagePreview = path.trim();
   }
 
   async submit(): Promise<void> {
@@ -90,10 +73,8 @@ export class ProductForm implements OnInit {
 
     this.ui.setLoading(true);
     try {
-      const inlineImageUrl = this.imagePreview.startsWith('data:image/') ? this.imagePreview : undefined;
-
       if (this.productId) {
-        await this.productService.updateProduct(this.productId, this.form.getRawValue(), uid, undefined, inlineImageUrl);
+        await this.productService.updateProduct(this.productId, this.form.getRawValue(), uid);
         this.ui.toast('Product updated');
       } else {
         await this.productService.addProduct(
@@ -101,8 +82,6 @@ export class ProductForm implements OnInit {
             ...this.form.getRawValue(),
             sellerId: uid,
           },
-          undefined,
-          inlineImageUrl,
         );
         this.ui.toast('Product added');
       }

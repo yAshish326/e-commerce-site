@@ -5,6 +5,9 @@
 	min-height: 100vh;
 	max-height: 100vh;
 	overflow: hidden;
+	background:
+		radial-gradient(circle at top left, rgba(199, 106, 42, 0.05), transparent 28%),
+		linear-gradient(180deg, #f7f2ea 0%, #f1ebe2 100%);
 }
 
 .seller-topbar {
@@ -14,9 +17,9 @@
 	gap: 14px;
 	padding: 14px;
 	border-radius: 16px;
-	background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-	border: 1px solid #e5e7eb;
-	box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+	background: rgba(255, 255, 255, 0.96);
+	border: 1px solid rgba(148, 163, 184, 0.14);
+	box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
 }
 
 .brand-block h1 {
@@ -60,10 +63,10 @@
 }
 
 .seller-nav a.active {
-	background: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%);
+	background: #c76a2a;
 	color: #fff;
 	border-color: transparent;
-	box-shadow: 0 10px 20px rgba(244, 63, 94, 0.3);
+	box-shadow: 0 10px 20px rgba(199, 106, 42, 0.22);
 }
 
 .seller-user {
@@ -98,9 +101,9 @@
 	color: #fff;
 	font-size: 13px;
 	font-weight: 700;
-	background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+	background: #d14b3f;
 	cursor: pointer;
-	box-shadow: 0 10px 18px rgba(239, 68, 68, 0.28);
+	box-shadow: 0 10px 18px rgba(209, 75, 63, 0.22);
 }
 
 .seller-content {

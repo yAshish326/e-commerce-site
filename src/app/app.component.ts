@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { ThemeService } from './core/services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -12,8 +13,11 @@ import { Observable } from 'rxjs';
 export class App {
   title = 'E-Commerce';
   private readonly router = inject(Router);
+  private readonly themeService = inject(ThemeService);
 
   constructor() {
+    void this.themeService.currentTheme;
+
     if (this.wasPageReloaded()) {
       void this.router.navigate(['/auth/login'], { replaceUrl: true });
     }

@@ -21,7 +21,7 @@
   @if (items.length === 0) {
     <mat-card class="empty-state">
       <div class="empty-visual">
-        <mat-icon>favorite_border</mat-icon>
+        <lucide-icon name="heart" size="30"></lucide-icon>
       </div>
       <h3>Your wishlist is empty</h3>
       <p>Save products from the catalog to build a list you can return to later.</p>
@@ -34,7 +34,7 @@
           <div class="card-media">
             <img
               mat-card-image
-              [src]="item.product.imageUrl || 'https://via.placeholder.com/640x420?text=Product'"
+              [src]="item.product.imageUrl || 'assets/products/default-lucide.svg'"
               [alt]="item.product.name"
             />
             <span class="price-badge">Rs. {{ item.product.price }}</span>
@@ -43,9 +43,6 @@
           <mat-card-content>
             <div class="card-topline">
               <span class="category-chip">{{ item.product.category }}</span>
-              <!-- <button mat-icon-button color="warn" type="button" (click)="remove(item)" aria-label="Remove from wishlist">
-                <mat-icon>delete_outline</mat-icon>
-              </button> -->
             </div>
 
             <h3>{{ item.product.name }}</h3>
@@ -54,7 +51,6 @@
 
           <mat-card-actions>
             <button mat-flat-button color="primary" type="button" (click)="moveToCart(item)">
-              <!-- <mat-icon>shopping_cart</mat-icon> -->
               Move to Cart
             </button>
             <button mat-button color="warn" type="button" (click)="remove(item)">Remove</button>

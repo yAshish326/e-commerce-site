@@ -9,7 +9,9 @@
   @if (cartItems.length === 0) {
     <div class="empty-cart">
       <mat-card class="empty-state">
-        <div class="empty-icon">🛒</div>
+        <div class="empty-icon">
+          <lucide-icon name="shopping-cart" size="56"></lucide-icon>
+        </div>
         <h2>Your cart is empty</h2>
         <p>Looks like you haven't added anything yet. Start shopping now!</p>
         <button mat-flat-button color="primary" (click)="continueShopping()" class="shop-btn">
@@ -40,11 +42,11 @@
               </div>
               <div class="item-quantity">
                 <button mat-icon-button class="icon-btn qty-btn" (click)="updateQty(item, -1)" [disabled]="item.quantity <= 1" aria-label="Decrease quantity">
-                  -
+                  <lucide-icon name="minus" size="16"></lucide-icon>
                 </button>
                 <input type="number" [value]="item.quantity" (change)="onQtyChange(item, $event)" class="qty-input" />
                 <button mat-icon-button class="icon-btn qty-btn" (click)="updateQty(item, 1)" [disabled]="item.quantity >= item.product.quantity || item.product.quantity <= 0" aria-label="Increase quantity">
-                  +
+                  <lucide-icon name="plus" size="16"></lucide-icon>
                 </button>
               </div>
               <div class="item-total">
@@ -52,7 +54,7 @@
                 <div class="total-amount">Rs. {{ (item.quantity * item.product.price) | number }}</div>
               </div>
               <button mat-icon-button class="remove-btn icon-btn" (click)="remove(item)" matTooltip="Remove from cart" aria-label="Remove from cart">
-                &#128465;
+                <lucide-icon name="trash-2" size="16"></lucide-icon>
               </button>
             </mat-card>
           }

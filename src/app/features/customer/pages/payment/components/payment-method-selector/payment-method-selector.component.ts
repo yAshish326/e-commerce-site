@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { LucideAngularModule } from 'lucide-angular';
 import { PaymentMethod } from '../../payment.models';
 
 interface PaymentMethodOption {
@@ -16,7 +16,7 @@ interface PaymentMethodOption {
 @Component({
   selector: 'app-payment-method-selector',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, MatButtonModule, LucideAngularModule],
   templateUrl: './payment-method-selector.component.html',
   styleUrl: './payment-method-selector.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,7 +30,7 @@ export class PaymentMethodSelectorComponent {
       id: 'upi',
       title: 'UPI',
       subtitle: 'Fast mobile checkout',
-      icon: 'qr_code_2',
+      icon: 'qr-code',
       accent: 'upi',
       chips: ['Google Pay', 'PhonePe', 'Paytm'],
     },
@@ -38,7 +38,7 @@ export class PaymentMethodSelectorComponent {
       id: 'card',
       title: 'Card',
       subtitle: 'Credit or debit card',
-      icon: 'credit_card',
+      icon: 'credit-card',
       accent: 'card',
       chips: ['Visa', 'Mastercard'],
     },
@@ -46,7 +46,7 @@ export class PaymentMethodSelectorComponent {
       id: 'wallet',
       title: 'Wallet',
       subtitle: 'Optional balance checkout',
-      icon: 'account_balance_wallet',
+      icon: 'wallet',
       accent: 'wallet',
       chips: ['Fast Pay', 'Low friction'],
     },

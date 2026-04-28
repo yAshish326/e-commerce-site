@@ -10,7 +10,7 @@
   } @else if (status() === 'success') {
     <div class="status-content center">
       <div class="status-icon success-icon">
-        <mat-icon>check</mat-icon>
+        <lucide-icon name="check" size="20"></lucide-icon>
       </div>
       <div>
         <h4>{{ title() || 'Payment Successful' }}</h4>
@@ -26,7 +26,7 @@
   } @else if (status() === 'failed') {
     <div class="status-content center">
       <div class="status-icon failed-icon">
-        <mat-icon>close</mat-icon>
+        <lucide-icon name="x" size="20"></lucide-icon>
       </div>
       <div>
         <h4>{{ title() || 'Payment Failed' }}</h4>
@@ -41,7 +41,7 @@
     </div>
   } @else {
     <div class="status-content empty">
-      <mat-icon>verified_user</mat-icon>
+      <lucide-icon name="badge-check" size="22"></lucide-icon>
       <div>
         <h4>Ready to pay</h4>
         <p>Select a method and continue checkout.</p>

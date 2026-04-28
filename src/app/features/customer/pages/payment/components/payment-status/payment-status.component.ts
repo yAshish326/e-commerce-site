@@ -2,14 +2,14 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LucideAngularModule } from 'lucide-angular';
 import { PaymentStatus } from '../../payment.models';
 
 @Component({
   selector: 'app-payment-status',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatProgressSpinnerModule, LucideAngularModule],
   templateUrl: './payment-status.component.html',
   styleUrl: './payment-status.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

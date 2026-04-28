@@ -20,7 +20,7 @@
         (click)="select(option.id)"
       >
         <div class="option-icon">
-          <mat-icon>{{ option.icon }}</mat-icon>
+          <lucide-icon [name]="option.icon" size="20"></lucide-icon>
         </div>
 
         <div class="option-copy">
@@ -33,7 +33,7 @@
           </div>
         </div>
 
-        <mat-icon class="chevron">chevron_right</mat-icon>
+        <lucide-icon class="chevron" name="chevron-right" size="18"></lucide-icon>
       </button>
     }
   </div>

@@ -4,7 +4,9 @@ import { combineLatest, map } from 'rxjs';
 import { UserProfile } from '../../core/models/app.models';
 import { AuthService } from '../../core/services/auth.service';
 import { ProductService } from '../../core/services/product.service';
+import { ThemeService } from '../../core/services/theme.service';
 import { CustomerSearchService } from './services/customer-search.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-customer',
@@ -17,6 +19,7 @@ export class Customer {
   private readonly router = inject(Router);
   private readonly productService = inject(ProductService);
   private readonly searchService = inject(CustomerSearchService);
+  private readonly themeService = inject(ThemeService);
 
   readonly authState$ = this.authService.authState$;
   readonly profile$ = this.authService.profile$;
@@ -26,10 +29,11 @@ export class Customer {
   readonly userBadge$ = this.userName$.pipe(
     map((name) => ({
       name,
-      initial: name.trim().charAt(0).toUpperCase() || 'C',
+      initial: (name.trim().replace(/\s+/g, '').slice(0, 2).toUpperCase() || 'C'),
     })),
   );
   readonly categories = ['All', ...this.productService.categories];
+  isDarkMode = this.themeService.currentTheme === 'dark';
 
   search = '';
   selectedCategory = 'All';
@@ -38,6 +42,10 @@ export class Customer {
   async logout(): Promise<void> {
     await this.authService.logout();
     await this.router.navigate(['/auth/login']);
+  }
+
+  toggleDarkMode(): void {
+    this.isDarkMode = this.themeService.toggleTheme() === 'dark';
   }
 
   onSearchChange(): void {

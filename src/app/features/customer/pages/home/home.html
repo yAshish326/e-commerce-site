@@ -1,109 +1,86 @@
 <section class="home-page">
+
   <header class="page-hero">
-    <div>
-      <p class="eyebrow">Discover something new</p>
-      <h2>Shop smarter, faster, and with a cleaner experience</h2>
-      <p class="hero-copy">Browse highlighted products, explore curated categories, and jump back into your favorite items without losing context.</p>
+    <div class="hero-text">
+      <p class="eyebrow">New arrivals</p>
+      <h1>Simple shopping, done well.</h1>
+      <p class="hero-sub">Browse a clean selection of products, save favorites, and order in a few easy steps.</p>
+      <div class="hero-cta">
+        <button type="button" class="btn-primary" routerLink="/customer/products">Shop now</button>
+        <button type="button" class="btn-ghost" routerLink="/customer/wishlist">Open wishlist</button>
+      </div>
     </div>
 
-    <div class="hero-badges">
-      <div class="badge-card"><span>Fast checkout</span></div>
-      <div class="badge-card"><span>Wishlist ready</span></div>
-      <div class="badge-card"><span>Wallet support</span></div>
-    </div>
+    @if (featuredProducts$ | async; as products) {
+      <div class="hero-visual">
+        <article class="hero-feature-card hero-feature-simple">
+          <div class="hero-feature-text">
+            <span class="sale-tag">Featured pick</span>
+            <h2>{{ products[0]?.name || 'Top pick this week' }}</h2>
+            <p>Hand-picked from the latest products in store.</p>
+            <button type="button" routerLink="/customer/products">Explore products</button>
+          </div>
+          <div class="hero-feature-media">
+            <img
+              [src]="products[0]?.imageUrl || 'assets/products/default-lucide.svg'"
+              alt="Featured product"
+              class="hero-feature-img"
+              (error)="onImageError($event)"
+            />
+          </div>
+        </article>
+      </div>
+    }
   </header>
 
   <div class="category-row">
-    <button type="button" class="chip chip-active">Browse Categories</button>
-    <button type="button" class="chip">Shop</button>
-    <button type="button" class="chip">Recent Items</button>
+    <button type="button" class="chip chip-active">All</button>
+    <button type="button" class="chip">Electronics</button>
+    <button type="button" class="chip">Fashion</button>
+    <button type="button" class="chip">Home</button>
     <button type="button" class="chip">Best Price</button>
     <button type="button" class="chip">Popular</button>
   </div>
-  			<!-- <div class="search-shell">
-				<input
-					type="text"
-					[value]="search"
-					(input)="onSearch($any($event.target).value)"
-					placeholder="Search here..."
-					aria-label="Search products"
-				/>
-			</div> -->
 
   @if (featuredProducts$ | async; as products) {
-    <div class="hero-grid">
-      <article class="hero-card hero-main">
-        <div class="hero-copy">
-          <p class="badge">New arrivals</p>
-          <h2>Best Furniture Collection</h2>
-          <p>Design, style and comfort that defines your lifestyle.</p>
-          <button type="button" routerLink="/customer/products">Shop now</button>
-        </div>
-        <img
-          class="hero-image hero-image-main"
-          src="assets/products/lamp.svg"
-          alt="Featured collection"
-          (error)="onImageError($event)"
-        />
-      </article>
-
-      <article class="hero-card hero-side">
-        <p class="badge">Super Sale 35%</p>
-        <h3>Stylish Looks For Any Season</h3>
-        <button type="button" routerLink="/customer/products">Shop now</button>
-        <img
-          class="hero-image hero-image-side"
-          [src]="products[1]?.imageUrl || 'assets/products/backpack.svg'"
-          alt="Featured product"
-          (error)="onImageError($event)"
-        />
-      </article>
-
-      <article class="hero-card hero-bottom-left">
-        <div>
-          <p class="badge">Summer Sale 70%</p>
-          <h3>Stylish Men Fashion</h3>
-          <button type="button" routerLink="/customer/products">Buy now</button>
-        </div>
-        <img
-          class="hero-image hero-image-bottom"
-          src="assets/products/book.svg"
-          alt="Fashion product"
-          (error)="onImageError($event)"
-        />
-      </article>
-
-      <article class="hero-card hero-bottom-mid">
-        <div class="offer-circle">30%</div>
-        <p>Special sale this week</p>
-        <img
-          class="hero-image"
-          [src]="products[3]?.imageUrl || 'assets/products/fitness-band.svg'"
-          alt="Offer product"
-          (error)="onImageError($event)"
-        />
-      </article>
+    <div class="section-header">
+      <h2>Trending products</h2>
+      <a routerLink="/customer/products">See all →</a>
     </div>
 
-    <div class="heading-row">
-      <h3>Trending Products</h3>
-      <a routerLink="/customer/products">View all products</a>
-    </div>
-
-    <div class="products">
+    <div class="products-grid">
       @for (product of products; track product.id) {
-        <article class="card">
-            <img [src]="product.imageUrl || 'assets/products/headphones.svg'" [alt]="product.name" (error)="onImageError($event)" />
-          <h4>{{ product.name }}</h4>
-          <p class="price">₹ {{ product.price }}</p>
-          <div class="card-actions">
-            <button type="button" class="outline-btn" [routerLink]="product.id ? ['/customer/products', product.id] : ['/customer/products']">
-              View Details
-            </button>
-            <button type="button" (click)="addToCart(product)">Add to Cart</button>
+        <article class="product-card">
+          <div class="product-img-wrap">
+            <img
+              [src]="product.imageUrl || 'assets/products/default-lucide.svg'"
+              [alt]="product.name"
+              (error)="onImageError($event)"
+            />
+            <button
+              type="button"
+              class="wishlist-btn"
+              aria-label="Add to wishlist"
+            >♡</button>
+          </div>
+          <div class="product-info">
+            <h4>{{ product.name }}</h4>
+            <p class="product-meta">{{ product.category }} • {{ (product.description || '').split('.').shift() }}</p>
+
+            <div class="product-footer">
+              <div class="price-block">
+                <span class="price">{{ product.price | currency:'INR':'symbol':'1.0-0' }}</span>
+                <span class="rating">★ 4.8</span>
+              </div>
+
+              <button class="add-circle" (click)="addToCart(product)" aria-label="Add">
+                +
+              </button>
+            </div>
           </div>
         </article>
       }
     </div>
   }
+
 </section>

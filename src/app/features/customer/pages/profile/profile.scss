@@ -8,13 +8,13 @@
 
 .heading-row h2 {
   margin: 0;
-  color: #1f2937;
+  color: var(--text);
   font-size: 28px;
 }
 
 .heading-row p {
   margin: 6px 0 0;
-  color: #6b7280;
+  color: var(--muted);
 }
 
 .profile-layout {
@@ -25,10 +25,10 @@
 
 .photo-card,
 .form-card {
-  background: #fff;
+  background: var(--surface);
   border-radius: 16px;
-  border: 1px solid rgba(255, 106, 77, 0.12);
-  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
   padding: 16px;
 }
 
@@ -45,14 +45,14 @@
   height: 180px;
   border-radius: 999px;
   object-fit: cover;
-  border: 3px solid #ffd8ca;
+  border: 3px solid var(--line);
 }
 
 .avatar-placeholder {
   display: grid;
   place-items: center;
-  background: #fff2ea;
-  color: #9a3412;
+  background: var(--surface-alt);
+  color: var(--accent);
   font-weight: 700;
 }
 
@@ -64,7 +64,7 @@
   border-radius: 10px;
   cursor: pointer;
   color: #fff;
-  background: linear-gradient(135deg, #ff6a4d 0%, #ff5239 100%);
+  background: var(--accent);
 }
 
 input[type='file'] {
@@ -73,7 +73,7 @@ input[type='file'] {
 
 .file-name {
   margin-top: 10px;
-  color: #6b7280;
+  color: var(--muted);
   font-size: 13px;
   word-break: break-word;
 }
@@ -90,7 +90,7 @@ form {
 
 label {
   font-size: 12px;
-  color: #374151;
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.8px;
   font-weight: 600;
@@ -100,19 +100,20 @@ input {
   width: 100%;
   padding: 11px 12px;
   border-radius: 10px;
-  border: 1.5px solid #e5e7eb;
-  background: #fff;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
 }
 
 input:focus {
   outline: none;
-  border-color: #ff6a4d;
-  box-shadow: 0 0 0 4px rgba(255, 106, 77, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(199, 106, 42, 0.1);
 }
 
 input[readonly] {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--surface-alt);
+  color: var(--muted);
 }
 
 button {
@@ -123,8 +124,8 @@ button {
   color: #fff;
   font-weight: 700;
   cursor: pointer;
-  background: linear-gradient(135deg, #ff6a4d 0%, #ff5239 100%);
-  box-shadow: 0 8px 18px rgba(255, 106, 77, 0.28);
+  background: var(--accent);
+  box-shadow: 0 2px 8px rgba(199, 106, 42, 0.2);
 }
 
 @media (max-width: 900px) {

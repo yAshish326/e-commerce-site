@@ -27,8 +27,7 @@ export class HomePageComponent {
     this.customerSearchService.sort$,
   ]).pipe(
     map(([items, query, category, sort]) => {
-      const filtered = this.productService.filterAndSort(items, category, query, sort);
-      return filtered.slice(0, 8);
+      return this.productService.filterAndSort(items, category, query, sort);
     }),
   );
 

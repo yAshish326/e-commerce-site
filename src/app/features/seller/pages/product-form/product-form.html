@@ -58,13 +58,14 @@
       <!-- Full Width: Product Image -->
       <div class="image-section full">
         <label class="image-label">Product Image</label>
-        <div class="image-upload">
-          <input type="file" accept="image/*" (change)="onFileSelected($event)" #fileInput />
-          <button mat-stroked-button type="button" (click)="fileInput.click()" class="browse-btn">
-            <span>📁 Browse...</span>
-          </button>
-          <span class="file-info">No file selected.</span>
-        </div>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Image Path (assets only)</mat-label>
+          <input matInput formControlName="imageUrl" placeholder="assets/products/default-lucide.svg" (input)="onImagePathChange($any($event.target).value)" />
+          <mat-hint>Use only local assets path like assets/products/backpack.svg</mat-hint>
+          @if (form.get('imageUrl')?.invalid && form.get('imageUrl')?.touched) {
+            <mat-error>Image path must start with assets/</mat-error>
+          }
+        </mat-form-field>
         @if (imagePreview) {
           <div class="preview-container">
             <img class="preview" [src]="imagePreview" alt="product preview" />

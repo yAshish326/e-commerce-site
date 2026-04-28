@@ -14,12 +14,15 @@
         }
       </div>
 
-      <label class="upload-btn" for="profile-photo">Upload Photo</label>
-      <input id="profile-photo" type="file" accept="image/*" (change)="onFileSelected($event)" />
-
-      @if (selectedFileName) {
-        <p class="file-name">Selected: {{ selectedFileName }}</p>
-      }
+      <label class="upload-btn" for="profilePhotoInput">Upload Photo</label>
+      <input
+        id="profilePhotoInput"
+        type="file"
+        accept="image/*"
+        (change)="onPhotoSelected($event)"
+      />
+      <p class="file-name">{{ selectedPhotoName }}</p>
+      <p class="file-name">You can upload an image or use local assets path (example: assets/Login.png)</p>
     </article>
 
     <article class="form-card">
@@ -41,7 +44,7 @@
 
         <div class="field">
           <label for="photoURL">Photo URL</label>
-          <input id="photoURL" type="url" formControlName="photoURL" placeholder="Photo URL (auto-filled after upload)" readonly />
+          <input id="photoURL" type="text" formControlName="photoURL" placeholder="assets/Login.png" (input)="onPhotoUrlChange($any($event.target).value)" />
         </div>
 
         <button type="submit">Save Profile</button>

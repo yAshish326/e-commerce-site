@@ -13,11 +13,11 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 20px;
-  background: linear-gradient(135deg, #0f172a 0%, #334155 55%, #475569 100%);
+  background: linear-gradient(135deg, #1f2937 0%, #475569 55%, #64748b 100%);
   border: none;
   border-radius: 18px;
   padding: 32px;
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.15);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.1);
   color: #fff;
 }
 
@@ -57,13 +57,13 @@
 
 .quick-actions button[mat-flat-button] {
   border-radius: 999px;
-  box-shadow: 0 10px 22px rgba(30, 64, 175, 0.2);
+  box-shadow: 0 10px 22px rgba(199, 106, 42, 0.16);
 }
 
 .quick-actions button[mat-stroked-button] {
   border-radius: 999px;
-  border-color: #a8c8f0;
-  color: #1e3a8a;
+  border-color: rgba(148, 163, 184, 0.4);
+  color: #334155;
   background: rgba(255, 255, 255, 0.72);
 }
 
@@ -126,8 +126,8 @@
 }
 
 .mini-metric {
-  background: linear-gradient(155deg, #ffffff 0%, #f3f9ff 100%);
-  border: 1px solid #e2e8f0;
+  background: linear-gradient(155deg, #ffffff 0%, #faf7f2 100%);
+  border: 1px solid rgba(148, 163, 184, 0.18);
   border-radius: 14px;
   padding: 16px 18px;
   box-shadow: 0 9px 19px rgba(15, 23, 42, 0.07);
@@ -158,8 +158,8 @@
 
 .kpi-card {
   border-radius: 18px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
   position: relative;
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -168,7 +168,7 @@
 
 .kpi-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 15px 30px rgba(14, 116, 144, 0.14);
+  box-shadow: 0 15px 30px rgba(15, 23, 42, 0.1);
 }
 
 .kpi-card::after {

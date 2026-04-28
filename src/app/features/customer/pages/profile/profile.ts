@@ -12,8 +12,6 @@ import { UiService } from '../../../../shared/services/ui.service';
   styleUrl: './profile.scss',
 })
 export class CustomerProfilePageComponent implements OnInit, OnDestroy {
-  private static readonly INLINE_PHOTO_MAX_BYTES = 350 * 1024;
-
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly ui = inject(UiService);
@@ -21,9 +19,8 @@ export class CustomerProfilePageComponent implements OnInit, OnDestroy {
 
   private readonly subscriptions = new Subscription();
   private currentUid: string | null = null;
-
-  selectedFileName = '';
   previewPhotoUrl = '';
+  selectedPhotoName = 'No file selected';
 
   readonly form = this.fb.nonNullable.group({
     email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
@@ -42,9 +39,9 @@ export class CustomerProfilePageComponent implements OnInit, OnDestroy {
           email: profile.email,
           displayName: profile.displayName ?? '',
           phone: profile.phone ?? '',
-          photoURL: profile.photoURL ?? '',
+          photoURL: this.normalizePhotoUrl(profile.photoURL),
         });
-        this.previewPhotoUrl = profile.photoURL ?? '';
+        this.previewPhotoUrl = this.normalizePhotoUrl(profile.photoURL);
         this.cdr.markForCheck();
       }),
     );
@@ -61,51 +58,43 @@ export class CustomerProfilePageComponent implements OnInit, OnDestroy {
     return uid;
   }
 
-  async onFileSelected(event: Event): Promise<void> {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
+  onPhotoUrlChange(value: string): void {
+    this.previewPhotoUrl = this.normalizePhotoUrl(value);
+  }
 
-    if (!file.type.startsWith('image/')) {
-      this.ui.toast('Please select an image file');
-      return;
-    }
-
-    // ✅ Check size limit — 350KB max for base64
-    if (file.size > CustomerProfilePageComponent.INLINE_PHOTO_MAX_BYTES) {
-      this.ui.toast('Image must be smaller than 350 KB');
-      input.value = '';
+  async onPhotoSelected(event: Event): Promise<void> {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (!file) {
       return;
     }
 
     const uid = await this.resolveUid();
     if (!uid) {
       this.ui.toast('Please login again');
+      target.value = '';
       return;
     }
 
-    this.selectedFileName = file.name;
     this.ui.setLoading(true);
-
     try {
-      // ✅ Simplified — uploadProfilePhoto now just does base64, no Firebase Storage
-      const photoURL = await this.authService.uploadProfilePhoto(uid, file);
-      await this.authService.updateProfile(uid, { photoURL });
-      this.form.patchValue({ photoURL });
-      this.previewPhotoUrl = photoURL;
+      const dataUrl = await this.authService.uploadProfilePhoto(uid, file);
+      this.form.patchValue({ photoURL: dataUrl });
+      this.previewPhotoUrl = dataUrl;
+      this.selectedPhotoName = file.name;
+      this.ui.toast('Photo ready. Click Save Profile to apply.');
       this.cdr.markForCheck();
-      this.ui.toast('Profile photo updated ✓');
-    } catch (error: unknown) {
-      const message = (error as { message?: string } | null)?.message;
-      if (message === 'invalid-image-type') {
-        this.ui.toast('Please upload a valid image file');
-      } else if (message === 'image-too-large') {
-        this.ui.toast('Image must be smaller than 350 KB');
+    } catch (error: any) {
+      if (error?.message === 'image-too-large') {
+        this.ui.toast('Image too large. Please use photo up to 350KB.');
+      } else if (error?.message === 'invalid-image-type') {
+        this.ui.toast('Please select an image file');
       } else {
-        this.ui.toast('Photo upload failed. Please try again');
+        this.ui.toast('Could not read selected image');
       }
     } finally {
       this.ui.setLoading(false);
+      target.value = '';
     }
   }
 
@@ -122,10 +111,12 @@ export class CustomerProfilePageComponent implements OnInit, OnDestroy {
     }
 
     const values = this.form.getRawValue();
+    const photoURL = this.normalizePhotoUrl(values.photoURL);
+
     const updates: Partial<UserProfile> = {
       displayName: values.displayName.trim(),
       phone: values.phone.trim(),
-      photoURL: values.photoURL.trim(),
+      photoURL,
     };
 
     this.ui.setLoading(true);
@@ -138,5 +129,24 @@ export class CustomerProfilePageComponent implements OnInit, OnDestroy {
     } finally {
       this.ui.setLoading(false);
     }
+  }
+
+  private normalizePhotoUrl(url: string | undefined): string {
+    const value = (url ?? '').trim();
+    if (!value) {
+      return 'assets/Login.png';
+    }
+
+    if (value.startsWith('data:image/')) {
+      return value;
+    }
+
+    const normalized = value
+      .replaceAll('\\', '/')
+      .replace(/^\.\//, '')
+      .replace(/^\//, '')
+      .replace(/^src\//, '');
+
+    return normalized.startsWith('assets/') ? normalized : 'assets/Login.png';
   }
 }

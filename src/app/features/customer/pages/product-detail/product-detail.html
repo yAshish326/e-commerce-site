@@ -24,7 +24,7 @@
         <span class="category-tag">{{ product.category }}</span>
         <img
           class="product-image"
-          [src]="product.imageUrl || 'https://via.placeholder.com/440x420?text=No+Image'"
+          [src]="product.imageUrl || 'assets/products/default-lucide.svg'"
           [alt]="product.name"
         />
       </section>
@@ -43,7 +43,7 @@
         <div class="price-section">
           <div>
             <span class="price-label">Price</span>
-            <span class="price">₹ {{ product.price | number }}</span>
+            <span class="price">{{ product.price | currency:'INR':'symbol':'1.0-0' }}</span>
           </div>
           <span class="tax-note">Inclusive of taxes</span>
         </div>

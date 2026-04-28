@@ -4,8 +4,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { LucideAngularModule } from 'lucide-angular';
 import { CardBrand } from '../../payment.models';
 
 export interface CardPaymentPayload {
@@ -19,7 +19,7 @@ export interface CardPaymentPayload {
 @Component({
   selector: 'app-card-payment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, LucideAngularModule],
   templateUrl: './card-payment.component.html',
   styleUrl: './card-payment.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

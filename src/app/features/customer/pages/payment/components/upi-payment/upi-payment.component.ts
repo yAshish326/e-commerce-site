@@ -4,14 +4,14 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { LucideAngularModule } from 'lucide-angular';
 import { UpiApp } from '../../payment.models';
 
 @Component({
   selector: 'app-upi-payment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, LucideAngularModule],
   templateUrl: './upi-payment.component.html',
   styleUrl: './upi-payment.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
