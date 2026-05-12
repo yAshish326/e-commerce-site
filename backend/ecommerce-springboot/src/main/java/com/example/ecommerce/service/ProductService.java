@@ -45,11 +45,11 @@ public class ProductService {
         }
         if (p.getId() == null) p.setId(java.util.UUID.randomUUID());
         p.setName(dto.getName());
-        p.setQuantity(dto.getQuantity());
-        p.setCategory(dto.getCategory());
-        p.setDescription(dto.getDescription());
-        p.setImageUrl(dto.getImageUrl());
-        p.setSellerId(dto.getSellerId());
+        p.setQuantity(dto.getQuantity() != null ? dto.getQuantity() : 0);
+        p.setCategory(dto.getCategory() != null ? dto.getCategory() : "");
+        p.setDescription(dto.getDescription() != null ? dto.getDescription() : "");
+        p.setImageUrl(dto.getImageUrl() != null ? dto.getImageUrl() : "");
+        p.setSellerId(dto.getSellerId() != null ? dto.getSellerId() : "");
         p.setPrice(dto.getPrice());
         p.setCreatedAt(System.currentTimeMillis());
         p.setUpdatedAt(System.currentTimeMillis());
@@ -64,7 +64,7 @@ public class ProductService {
             if (opt.isEmpty()) return null;
             Product p = opt.get();
             p.setName(dto.getName());
-            p.setQuantity(dto.getQuantity());
+            if (dto.getQuantity() != null) p.setQuantity(dto.getQuantity());
             p.setCategory(dto.getCategory());
             p.setDescription(dto.getDescription());
             p.setImageUrl(dto.getImageUrl());

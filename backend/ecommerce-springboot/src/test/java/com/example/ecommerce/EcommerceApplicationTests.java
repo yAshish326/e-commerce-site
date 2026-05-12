@@ -43,7 +43,7 @@ public class EcommerceApplicationTests {
         HttpEntity<ProductDto> createReq = new HttpEntity<>(p, headers);
 
         ResponseEntity<ProductDto> createResp = rest.exchange("/api/products", HttpMethod.POST, createReq, ProductDto.class);
-        assertThat(createResp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(createResp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(createResp.getBody().getId()).isNotNull();
 
         // List products
