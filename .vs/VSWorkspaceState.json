@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\backend",
+    "\\backend\\ECommerce.Api",
+    "\\backend\\ECommerce.Api\\Controllers"
+  ],
+  "SelectedNode": "\\backend\\ECommerce.Api\\Controllers\\ProductsController.cs",
+  "PreviewInSolutionExplorer": false
+}
