@@ -1,6 +1,8 @@
 package com.example.ecommerce.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "cart_records")
@@ -12,7 +14,8 @@ public class CartRecord {
     private String productId;
     private Integer quantity;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private String productJson;
 
     public String getId() { return id; }

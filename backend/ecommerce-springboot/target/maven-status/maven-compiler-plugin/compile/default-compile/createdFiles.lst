@@ -1,3 +1,4 @@
+com\example\ecommerce\migration\MigrationRunner$5.class
 com\example\ecommerce\controller\WishlistController.class
 com\example\ecommerce\controller\AuthController.class
 com\example\ecommerce\model\User.class
@@ -8,6 +9,7 @@ com\example\ecommerce\dto\AuthResponse.class
 com\example\ecommerce\controller\SellerController.class
 com\example\ecommerce\repository\CheckoutAddressRepository.class
 com\example\ecommerce\config\WebConfig.class
+com\example\ecommerce\migration\MigrationRunner$1.class
 com\example\ecommerce\dto\PaymentResponse.class
 com\example\ecommerce\controller\OrdersController.class
 com\example\ecommerce\dto\ProductDto.class
@@ -21,7 +23,9 @@ com\example\ecommerce\model\WishlistRecord.class
 com\example\ecommerce\security\SecurityConfig.class
 com\example\ecommerce\service\SellerDashboardService.class
 com\example\ecommerce\dto\SellerRevenueTrendPoint.class
+com\example\ecommerce\migration\MigrationRunner.class
 com\example\ecommerce\dto\SellerCategoryDistributionItem.class
+com\example\ecommerce\migration\MigrationRunner$2.class
 com\example\ecommerce\repository\ProductRepository.class
 com\example\ecommerce\config\DataSeeder.class
 com\example\ecommerce\service\PaymentService.class
@@ -39,11 +43,13 @@ com\example\ecommerce\model\CartRecord.class
 com\example\ecommerce\repository\UserProfileRepository.class
 com\example\ecommerce\model\UserProfile.class
 com\example\ecommerce\security\JwtAuthenticationEntryPoint.class
+com\example\ecommerce\migration\MigrationRunner$4.class
 com\example\ecommerce\security\JwtAuthenticationFilter.class
 com\example\ecommerce\model\CheckoutAddressRecord.class
 com\example\ecommerce\model\OrderRecord.class
 com\example\ecommerce\service\AuthService.class
 com\example\ecommerce\EcommerceApplication.class
+com\example\ecommerce\migration\MigrationRunner$3.class
 com\example\ecommerce\service\CustomUserDetailsService.class
 com\example\ecommerce\controller\CartController.class
 com\example\ecommerce\dto\RegisterRequest.class

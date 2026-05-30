@@ -1,6 +1,8 @@
 package com.example.ecommerce.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "wishlist_records")
@@ -11,7 +13,8 @@ public class WishlistRecord {
     private String uid;
     private String productId;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private String productJson;
 
     public String getId() { return id; }

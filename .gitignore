@@ -5,11 +5,13 @@
 /tmp
 /out-tsc
 /bazel-out
+/backend/ecommerce-springboot/target/
 
 # Node
 /node_modules
 npm-debug.log
 yarn-error.log
+*.log
 
 # IDEs and editors
 .idea/

@@ -1,14 +1,37 @@
 # ecommerce-springboot
 
-Prototype Spring Boot backend for the E-Commerce app (Auth + Products).
+Spring Boot backend for the E-Commerce app (Auth + Products).
 
-Run locally:
+Run with PostgreSQL:
+
+1. Create the databases:
+
+```sql
+CREATE DATABASE ecommerce;
+CREATE DATABASE ecommerce_test;
+```
+
+2. Configure connection values if your PostgreSQL setup differs from the defaults:
+
+```bash
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=ecommerce
+DB_USER=postgres
+
+.
+DB_PASSWORD=postgres
+
+TEST_DB_NAME=ecommerce_test
+```
+
+3. Start the backend:
 
 ```
 mvnw spring-boot:run
 ```
 
-Server runs on port 8081 and uses H2 in-memory DB for the prototype.
+Server runs on port 8081 and uses PostgreSQL for development, tests, and production.
 
 Quick curl examples:
 

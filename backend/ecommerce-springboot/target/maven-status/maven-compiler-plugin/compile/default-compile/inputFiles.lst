@@ -28,6 +28,7 @@ C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\repository\CartRepository.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\model\User.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\repository\PaymentRepository.java
+C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\controller\UploadsController.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\model\WishlistRecord.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\repository\OrderRepository.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\controller\OrdersController.java
@@ -38,11 +39,13 @@ C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\dto\SellerTopProduct.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\dto\SellerCategoryDistributionItem.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\dto\SellerOrdersDistribution.java
+C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\config\CorsResponseFilter.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\security\JwtAuthenticationEntryPoint.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\controller\PaymentsController.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\dto\LoginRequest.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\repository\UserProfileRepository.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\service\PaymentService.java
+C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\migration\MigrationRunner.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\service\AuthService.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\exception\GlobalExceptionHandler.java
 C:\Users\aashi\OneDrive\Desktop\E-Commerce\backend\ecommerce-springboot\src\main\java\com\example\ecommerce\model\PaymentRecord.java

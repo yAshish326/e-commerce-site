@@ -2,6 +2,8 @@ package com.example.ecommerce.model;
 
 import jakarta.persistence.*;
 import java.util.UUID;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "order_records")
@@ -12,7 +14,8 @@ public class OrderRecord {
 
     private String uid;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private String itemsJson;
 
     private java.math.BigDecimal amount;
@@ -22,10 +25,12 @@ public class OrderRecord {
     private String couponCode;
     private String paymentReferenceId;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private String sellerIdsJson;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private String addressJson;
 
     private Long createdAt;

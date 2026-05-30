@@ -4,15 +4,18 @@ import com.example.ecommerce.dto.AuthResponse;
 import com.example.ecommerce.dto.LoginRequest;
 import com.example.ecommerce.dto.ProductDto;
 import com.example.ecommerce.dto.RegisterRequest;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 public class EcommerceApplicationTests {
 
     @Autowired
@@ -23,7 +26,7 @@ public class EcommerceApplicationTests {
         // Register
         RegisterRequest reg = new RegisterRequest();
         reg.setName("Test User");
-        reg.setEmail("test@example.com");
+        reg.setEmail("test-" + UUID.randomUUID() + "@example.com");
         reg.setPassword("pass123");
 
         ResponseEntity<AuthResponse> regResp = rest.postForEntity("/api/auth/register", reg, AuthResponse.class);

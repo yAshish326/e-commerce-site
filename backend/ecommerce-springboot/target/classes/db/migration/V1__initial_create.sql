@@ -12,21 +12,21 @@ CREATE TABLE IF NOT EXISTS cart_records (
   uid text NOT NULL,
   product_id text NOT NULL,
   quantity integer NOT NULL,
-  product_json clob NOT NULL
+  product_json text NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS order_records (
   id uuid PRIMARY KEY,
   uid text NOT NULL,
-  items_json clob NOT NULL,
+  items_json text NOT NULL,
   amount numeric NOT NULL,
   status text NOT NULL,
   payment_status text NOT NULL,
   payment_method text,
   coupon_code text,
   payment_reference_id text,
-  seller_ids_json clob NOT NULL,
-  address_json clob NOT NULL,
+  seller_ids_json text NOT NULL,
+  address_json text NOT NULL,
   created_at bigint NOT NULL
 );
 
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS wishlist_records (
   id text PRIMARY KEY,
   uid text NOT NULL,
   product_id text NOT NULL,
-  product_json clob NOT NULL
+  product_json text NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS payment_records (

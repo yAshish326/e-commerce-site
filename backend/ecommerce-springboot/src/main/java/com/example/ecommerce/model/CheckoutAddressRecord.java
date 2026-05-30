@@ -1,6 +1,8 @@
 package com.example.ecommerce.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "checkout_address_records")
@@ -10,7 +12,8 @@ public class CheckoutAddressRecord {
 
     private String uid;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private String addressJson;
 
     private Boolean isDefault;
