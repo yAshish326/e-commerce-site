@@ -6,6 +6,8 @@
 /out-tsc
 /bazel-out
 /backend/ecommerce-springboot/target/
+/frontend/dist/
+/frontend/.angular/
 
 # Node
 /node_modules
