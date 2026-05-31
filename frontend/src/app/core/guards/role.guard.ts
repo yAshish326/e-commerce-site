@@ -6,7 +6,18 @@ export const roleGuard: CanActivateFn = async (route: ActivatedRouteSnapshot) =>
   const authService = inject(AuthService);
   const router = inject(Router);
   const expectedRole = route.data['role'] as string;
-  const uid = await authService.getCurrentUidAsync(10000);
+  let uid = await authService.getCurrentUidAsync(10000);
+
+  if (!uid && localStorage.getItem('auth.token') && localStorage.getItem('auth.uid')) {
+    try {
+      const valid = await authService.validateStoredSession();
+      if (valid) {
+        uid = authService.getCurrentUid();
+      }
+    } catch {
+      // fall through to redirect
+    }
+  }
 
   if (!uid) {
     return router.createUrlTree(['/auth/login'], {

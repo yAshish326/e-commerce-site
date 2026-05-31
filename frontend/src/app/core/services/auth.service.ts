@@ -11,7 +11,9 @@ export class AuthService {
   private static readonly MAX_PROFILE_PHOTO_SIZE_BYTES = 350 * 1024;
   // emit a lightweight user-like object so existing components expecting user.displayName/user.email continue to work
   private readonly authStateSubject = new BehaviorSubject<any | null>(
-    localStorage.getItem('auth.uid') ? { uid: localStorage.getItem('auth.uid') } : null,
+    localStorage.getItem('auth.token') && localStorage.getItem('auth.uid')
+      ? { uid: localStorage.getItem('auth.uid') }
+      : null,
   );
   readonly authState$ = this.authStateSubject.asObservable();
 
@@ -51,9 +53,46 @@ export class AuthService {
   }
 
   async logout(): Promise<void> {
+    try {
+      await this.http.post(`${environment.apiBaseUrl}/auth/logout`, {}).toPromise();
+    } catch {
+      // Ignore logout endpoint failures and clear the local session anyway.
+    } finally {
+      this.clearSession();
+    }
+  }
+
+  clearSession(): void {
     localStorage.removeItem('auth.token');
     localStorage.removeItem('auth.uid');
     this.authStateSubject.next(null);
+  }
+
+  /**
+   * Validate the currently stored token+uid by attempting to fetch the user's profile.
+   * Returns true when the stored session appears valid; false otherwise (and clears it).
+   */
+  async validateStoredSession(): Promise<boolean> {
+    const token = localStorage.getItem('auth.token');
+    const uid = localStorage.getItem('auth.uid');
+    if (!token || !uid) {
+      this.clearSession();
+      return false;
+    }
+
+    try {
+      const profile = await this.http.get<UserProfile>(`${environment.apiBaseUrl}/users/${uid}`).toPromise();
+      if (!profile) {
+        this.clearSession();
+        return false;
+      }
+      // session valid — ensure auth state reflects it
+      this.authStateSubject.next({ uid });
+      return true;
+    } catch {
+      this.clearSession();
+      return false;
+    }
   }
 
   async updateProfile(uid: string, updates: Partial<UserProfile>): Promise<void> {

@@ -1,9 +1,9 @@
 package com.example.ecommerce;
 
-import com.example.ecommerce.dto.AuthResponse;
-import com.example.ecommerce.dto.LoginRequest;
-import com.example.ecommerce.dto.ProductDto;
-import com.example.ecommerce.dto.RegisterRequest;
+import dto.AuthResponse;
+import dto.LoginRequest;
+import dto.ProductDto;
+import dto.RegisterRequest;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
