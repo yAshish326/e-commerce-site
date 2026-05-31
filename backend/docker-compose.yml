@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: ./ecommerce-springboot
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=ecommerce
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      - db
+    ports:
+      - "8081:8081"
+
+volumes:
+  pgdata:

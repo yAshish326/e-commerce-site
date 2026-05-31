@@ -1,0 +1,8 @@
+{
+  "files.exclude": {
+    "dist": true
+  },
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "FSharp.suggestGitignore": false
+}
